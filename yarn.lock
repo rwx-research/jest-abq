@@ -3984,6 +3984,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rwx-research/abq@npm:0.1.0-alpha.0":
+  version: 0.1.0-alpha.0
+  resolution: "@rwx-research/abq@npm:0.1.0-alpha.0"
+  checksum: eab590d7a1a2d97f7a5a9cc5dc595ad989265d3e9aadb7a813275e00e5c4f381d1910065203eef00ed439bb41bbedca5daea65f96553afb1a929511a37f69f0c
+  languageName: node
+  linkType: hard
+
 "@sideway/address@npm:^4.1.3":
   version: 4.1.4
   resolution: "@sideway/address@npm:4.1.4"
@@ -12387,6 +12394,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
     "@jest/types": "workspace:^"
+    "@rwx-research/abq": 0.1.0-alpha.0
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
