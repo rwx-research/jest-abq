@@ -6,6 +6,7 @@
  */
 
 import {sep} from 'path';
+import {getAbqConfiguration} from '@rwx-research/abq';
 import {isCI} from 'ci-info';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -41,7 +42,7 @@ const defaultOptions: Config.DefaultOptions = {
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
-  listTests: false,
+  listTests: getAbqConfiguration().shouldGenerateManifest,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
