@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Socket} from 'net';
 import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
