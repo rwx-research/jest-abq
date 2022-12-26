@@ -7,15 +7,7 @@
 
 import {Socket} from 'net';
 import * as path from 'path';
-import {
-  TestCaseMessage,
-  TestResultMessage,
-  getAbqConfiguration,
-  initSuccessMessage,
-  protocolReader,
-  protocolWrite,
-  spawnedMessage,
-} from '@rwx-research/abq';
+import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
 import Emittery = require('emittery');
 import pLimit = require('p-limit');
@@ -52,7 +44,7 @@ export type {
 
 type TestWorker = typeof import('./testWorker');
 
-const abq = getAbqConfiguration();
+const abqConfig = Abq.getAbqConfiguration();
 
 export default class TestRunner extends EmittingTestRunner {
   readonly #eventEmitter = new Emittery<TestEvents>();
@@ -62,7 +54,7 @@ export default class TestRunner extends EmittingTestRunner {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
-    if (abq.enabled) {
+    if (abqConfig.enabled) {
       return await this.#createInBandTestRun(tests, watcher);
     }
 
@@ -75,7 +67,7 @@ export default class TestRunner extends EmittingTestRunner {
     process.env.JEST_WORKER_ID = '1';
     const mutex = pLimit(1);
 
-    if (abq.enabled) {
+    if (abqConfig.enabled) {
       return this.#createAbqTestRun(tests);
     }
 
@@ -126,8 +118,8 @@ export default class TestRunner extends EmittingTestRunner {
     );
   }
 
-  async #createAbqTestRun(tests: Array<Test>) {
-    if (!abq.enabled) {
+  async #createAbqTestRun(tests: Array<Test>): Promise<void> {
+    if (!abqConfig.enabled) {
       throw new Error('Cannot create abq test run when abq is disabled');
     }
 
@@ -136,11 +128,7 @@ export default class TestRunner extends EmittingTestRunner {
     }
 
     // TODO(dtm): pull from abq package
-    async function connect(abqConfig: {
-      enabled: boolean;
-      host: string;
-      port: number;
-    }): Promise<Socket> {
+    async function connect(abqConfig: any): Promise<Socket> {
       if (!abqConfig.enabled) {
         throw new Error('abq must be enabled to connect');
       }
@@ -159,15 +147,15 @@ export default class TestRunner extends EmittingTestRunner {
     }
 
     return new Promise((resolve, reject) => {
-      connect(abq)
+      connect(abqConfig)
         .then(socket => {
-          socket.on('close', resolve);
+          socket.on('close', () => resolve(undefined));
           return socket;
         })
         .then(async socket => {
-          await protocolWrite(socket, spawnedMessage());
+          await Abq.protocolWrite(socket, Abq.spawnedMessage());
 
-          protocolReader(socket, async initOrTestCaseMessage => {
+          Abq.protocolReader(socket, async initOrTestCaseMessage => {
             if ('init_meta' in initOrTestCaseMessage) {
               // This is the initialization message; we don't need it, so just send
               // the success message and move on.
@@ -177,12 +165,12 @@ export default class TestRunner extends EmittingTestRunner {
               if (initMsg.fast_exit) {
                 socket.destroy(); // will resolve the promise
               } else {
-                await protocolWrite(socket, initSuccessMessage());
+                await Abq.protocolWrite(socket, Abq.initSuccessMessage());
               }
               return;
             }
 
-            const testCaseMessage: TestCaseMessage = initOrTestCaseMessage;
+            const testCaseMessage: Abq.TestCaseMessage = initOrTestCaseMessage;
             const testCase = testCaseMessage.test_case;
             const fileName = resolveTestPath(testCase.meta.fileName);
             const testName = testCase.meta.testName;
@@ -209,7 +197,7 @@ export default class TestRunner extends EmittingTestRunner {
 
             await this.#runInBandTest(test, testConfig).then(
               result => {
-                let testResultMessage: TestResultMessage;
+                let testResultMessage: Abq.TestResultMessage;
 
                 // If the test errored before being executed, then we will receive an
                 // Error here; however, because jest runs tests in another node
@@ -263,10 +251,10 @@ export default class TestRunner extends EmittingTestRunner {
                   };
                 }
 
-                return protocolWrite(socket, testResultMessage);
+                return Abq.protocolWrite(socket, testResultMessage);
               },
               error => {
-                const testResultMessage: TestResultMessage = {
+                const testResultMessage: Abq.TestResultMessage = {
                   test_result: {
                     display_name: testName || fileName,
                     id: testCase.id,
@@ -276,7 +264,7 @@ export default class TestRunner extends EmittingTestRunner {
                     status: 'error',
                   },
                 };
-                return protocolWrite(socket, testResultMessage);
+                return Abq.protocolWrite(socket, testResultMessage);
               },
             );
             return undefined;
