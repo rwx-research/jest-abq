@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Socket} from 'net';
 import * as path from 'path';
+import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';
@@ -31,6 +33,8 @@ import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
+
+const abqConfig = Abq.getAbqConfiguration();
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -205,7 +209,64 @@ export default async function runJest({
   if (globalConfig.listTests) {
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
     /* eslint-disable no-console */
-    if (globalConfig.json) {
+    if (abqConfig.shouldGenerateManifest) {
+      // TODO(dtm): pull from abq package
+      async function connect(abqConfig: any): Promise<Socket> {
+        if (!abqConfig.enabled) {
+          throw new Error('abq must be enabled to connect');
+        }
+
+        const socket = new Socket();
+
+        return await new Promise(resolve => {
+          socket.connect(
+            {
+              host: abqConfig.host,
+              port: abqConfig.port,
+            },
+            () => resolve(socket),
+          );
+        });
+      }
+
+      await connect(abqConfig).then(async socket => {
+        console.log('TCP connection established with the server.');
+        // Protocol for generating manifest:
+        //
+        // 1. Send protocol version to ABQ_SOCKET, as soon as possible
+        // 2. Send test manifest to ABQ_SOCKET, then exit.
+
+        await Abq.protocolWrite(socket, Abq.spawnedMessage());
+
+        let tests: Array<Abq.ManifestMember> = [];
+
+        if (abqConfig.shouldRunIndividualTests) {
+          // See https://github.com/rwx-research/abq-jest/pull/4.
+          throw new Error(
+            'Running individual tests is not yet implemented. Please run the associated file.',
+          );
+        } else {
+          tests = allTests.map(test => {
+            const testPath = normalizeTestPath(test.path);
+
+            return {
+              id: testPath,
+              meta: {
+                fileName: testPath,
+              },
+              tags: [],
+              type: 'test',
+            };
+          });
+        }
+        const init_meta = {};
+        const manifest: Abq.ManifestMessage = {
+          manifest: {init_meta, members: tests},
+        };
+        await Abq.protocolWrite(socket, manifest);
+        socket.destroy();
+      });
+    } else if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
     } else {
       console.log(testsPaths.join('\n'));
@@ -279,6 +340,10 @@ export default async function runJest({
     }
   }
 
+  if (abqConfig.shouldHideNativeOutput) {
+    globalConfig = {...globalConfig, reporters: []};
+  }
+
   const scheduler = await createTestScheduler(globalConfig, {
     startRun,
     ...testSchedulerContext,
@@ -292,7 +357,7 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  await processResults(results, {
+  return await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,
@@ -300,4 +365,8 @@ export default async function runJest({
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
+}
+
+function normalizeTestPath(testPath: string): string {
+  return path.relative(process.cwd(), testPath);
 }
