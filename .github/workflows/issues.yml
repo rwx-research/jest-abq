@@ -1,8 +1,9 @@
 name: 'Close issues'
 
 on:
-  issues:
-    types: [labeled]
+  workflow_dispatch:
+  # issues:
+  #   types: [labeled]
 
 permissions:
   issues: write # to close issues (peter-evans/close-issue)
