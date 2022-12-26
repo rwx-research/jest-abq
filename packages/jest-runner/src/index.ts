@@ -5,6 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Socket} from 'net';
+import * as path from 'path';
+import {
+  TestCaseMessage,
+  TestResultMessage,
+  getAbqConfiguration,
+  initSuccessMessage,
+  protocolReader,
+  protocolWrite,
+  spawnedMessage,
+} from '@rwx-research/abq';
 import chalk = require('chalk');
 import Emittery = require('emittery');
 import pLimit = require('p-limit');
@@ -14,6 +25,8 @@ import type {
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {formatExecError} from 'jest-message-util';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
@@ -39,6 +52,8 @@ export type {
 
 type TestWorker = typeof import('./testWorker');
 
+const abq = getAbqConfiguration();
+
 export default class TestRunner extends EmittingTestRunner {
   readonly #eventEmitter = new Emittery<TestEvents>();
 
@@ -47,6 +62,10 @@ export default class TestRunner extends EmittingTestRunner {
     watcher: TestWatcher,
     options: TestRunnerOptions,
   ): Promise<void> {
+    if (abq.enabled) {
+      return await this.#createInBandTestRun(tests, watcher);
+    }
+
     return options.serial
       ? this.#createInBandTestRun(tests, watcher)
       : this.#createParallelTestRun(tests, watcher);
@@ -55,42 +74,216 @@ export default class TestRunner extends EmittingTestRunner {
   async #createInBandTestRun(tests: Array<Test>, watcher: TestWatcher) {
     process.env.JEST_WORKER_ID = '1';
     const mutex = pLimit(1);
+
+    if (abq.enabled) {
+      return this.#createAbqTestRun(tests);
+    }
+
     return tests.reduce(
       (promise, test) =>
         mutex(() =>
-          promise
-            .then(async () => {
-              if (watcher.isInterrupted()) {
-                throw new CancelRun();
-              }
+          promise.then(async () => {
+            if (watcher.isInterrupted()) {
+              throw new CancelRun();
+            }
 
-              // `deepCyclicCopy` used here to avoid mem-leak
-              const sendMessageToJest: TestFileEvent = (eventName, args) =>
-                this.#eventEmitter.emit(
-                  eventName,
-                  deepCyclicCopy(args, {keepPrototype: false}),
-                );
-
-              await this.#eventEmitter.emit('test-file-start', [test]);
-
-              return runTest(
-                test.path,
-                this._globalConfig,
-                test.context.config,
-                test.context.resolver,
-                this._context,
-                sendMessageToJest,
-              );
-            })
-            .then(
-              result =>
-                this.#eventEmitter.emit('test-file-success', [test, result]),
-              error =>
-                this.#eventEmitter.emit('test-file-failure', [test, error]),
-            ),
+            await this.#runInBandTest(test, this._globalConfig);
+          }),
         ),
       Promise.resolve(),
     );
+  }
+
+  async #runInBandTest(
+    test: Test,
+    testConfig: Config.GlobalConfig,
+  ): Promise<TestResult> {
+    // `deepCyclicCopy` used here to avoid mem-leak
+    const sendMessageToJest: TestFileEvent = (eventName, args) =>
+      this.#eventEmitter.emit(
+        eventName,
+        deepCyclicCopy(args, {keepPrototype: false}),
+      );
+
+    await this.#eventEmitter.emit('test-file-start', [test]);
+
+    return runTest(
+      test.path,
+      testConfig,
+      test.context.config,
+      test.context.resolver,
+      this._context,
+      sendMessageToJest,
+    ).then(
+      result => {
+        this.#eventEmitter.emit('test-file-success', [test, result]);
+        return result;
+      },
+      error => {
+        this.#eventEmitter.emit('test-file-failure', [test, error]);
+        return error;
+      },
+    );
+  }
+
+  async #createAbqTestRun(tests: Array<Test>) {
+    if (!abq.enabled) {
+      throw new Error('Cannot create abq test run when abq is disabled');
+    }
+
+    function resolveTestPath(testPath: string): string {
+      return path.resolve(process.cwd(), testPath);
+    }
+
+    // TODO(dtm): pull from abq package
+    async function connect(abqConfig: {
+      enabled: boolean;
+      host: string;
+      port: number;
+    }): Promise<Socket> {
+      if (!abqConfig.enabled) {
+        throw new Error('abq must be enabled to connect');
+      }
+
+      const socket = new Socket();
+
+      return await new Promise(resolve => {
+        socket.connect(
+          {
+            host: abqConfig.host,
+            port: abqConfig.port,
+          },
+          () => resolve(socket),
+        );
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      connect(abq)
+        .then(socket => {
+          socket.on('close', resolve);
+          return socket;
+        })
+        .then(async socket => {
+          await protocolWrite(socket, spawnedMessage());
+
+          protocolReader(socket, async initOrTestCaseMessage => {
+            if ('init_meta' in initOrTestCaseMessage) {
+              // This is the initialization message; we don't need it, so just send
+              // the success message and move on.
+              //
+              // If we were told to exit immediately, do that instead.
+              const initMsg = initOrTestCaseMessage;
+              if (initMsg.fast_exit) {
+                socket.destroy(); // will resolve the promise
+              } else {
+                await protocolWrite(socket, initSuccessMessage());
+              }
+              return;
+            }
+
+            const testCaseMessage: TestCaseMessage = initOrTestCaseMessage;
+            const testCase = testCaseMessage.test_case;
+            const fileName = resolveTestPath(testCase.meta.fileName);
+            const testName = testCase.meta.testName;
+            const test = tests.find(t => t.path === fileName);
+            if (!test) {
+              throw new Error(`could not find test ${fileName}`);
+            }
+
+            let testConfig;
+            if (testName) {
+              testConfig = {
+                ...this._globalConfig,
+                testNamePattern: testName,
+              };
+            } else {
+              testConfig = this._globalConfig;
+            }
+
+            // Estimated start time used in estimating the runtime when the test
+            // will ultimately error-out. The estimation is imprecise because the
+            // test runner may yield at any async/await points, and not account for
+            // that.
+            const estimatedStartTime = Date.now();
+
+            await this.#runInBandTest(test, testConfig).then(
+              result => {
+                let testResultMessage: TestResultMessage;
+
+                // If the test errored before being executed, then we will receive an
+                // Error here; however, because jest runs tests in another node
+                // process, the error will have been created in another node process
+                // as well, and hence will not be seen as an `Error` instance in
+                // this process.
+                // Instead, rely on the heuristic of error objects to check whether
+                // the response is an error.
+                //
+                // One may expect that ABQ instead patches jest's `runTestInternal`
+                // to explicitly throw an error when the underlying test execution
+                // process fails; however, to keep ABQ's patch light-weight we
+                // currently do not do this.
+                function resultIsError(result: any): result is Error {
+                  return 'stack' in result && 'message' in result;
+                }
+
+                if (resultIsError(result)) {
+                  const estimatedRuntime = estimatedStartTime - Date.now();
+
+                  const formattedError = formatExecError(
+                    result,
+                    test.context.config,
+                    {noStackTrace: false},
+                    undefined,
+                    true,
+                  );
+
+                  testResultMessage = {
+                    test_result: {
+                      display_name: testName || fileName,
+                      id: testCase.id,
+                      meta: {},
+                      output: formattedError,
+                      runtime: estimatedRuntime,
+                      status: 'error',
+                    },
+                  };
+                } else {
+                  const isFailing = result.numFailingTests > 0;
+
+                  testResultMessage = {
+                    test_result: {
+                      display_name: testName || fileName,
+                      id: testCase.id,
+                      meta: {},
+                      output: result.failureMessage,
+                      runtime: result.perfStats ? result.perfStats.runtime : 0,
+                      status: isFailing ? 'failure' : 'success',
+                    },
+                  };
+                }
+
+                return protocolWrite(socket, testResultMessage);
+              },
+              error => {
+                const testResultMessage: TestResultMessage = {
+                  test_result: {
+                    display_name: testName || fileName,
+                    id: testCase.id,
+                    meta: {},
+                    output: error.message,
+                    runtime: 0,
+                    status: 'error',
+                  },
+                };
+                return protocolWrite(socket, testResultMessage);
+              },
+            );
+            return undefined;
+          });
+        })
+        .catch(error => reject(error));
+    });
   }
 
   async #createParallelTestRun(tests: Array<Test>, watcher: TestWatcher) {
