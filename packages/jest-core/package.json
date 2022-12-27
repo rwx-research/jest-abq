@@ -96,6 +96,10 @@
     "typescript",
     "watch"
   ],
+  "resolutions": {
+    "jest-config": "file:../jest-config",
+    "jest-runner": "file:../jest-runner"
+  },
   "publishConfig": {
     "access": "public"
   }
