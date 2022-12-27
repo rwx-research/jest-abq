@@ -1,0 +1,20 @@
+{
+  "version": "29.3.100-alpha.0",
+  "packages": [
+    {
+      "path": "jest-config",
+      "upstreamName": "jest-config",
+      "rwxName": "@rwx-research/jest-config"
+    },
+    {
+      "path": "jest-core",
+      "upstreamName": "@jest/core",
+      "rwxName": "@rwx-research/jest-core"
+    },
+    {
+      "path": "jest-runner",
+      "upstreamName": "jest-runner",
+      "rwxName": "@rwx-research/jest-runner"
+    }
+  ]
+}
