@@ -10,32 +10,40 @@
  * overrides, etc.
  */
 
-import {createRequire} from 'module';
-import * as fs from 'fs';
-import * as path from 'path';
 import chalk from 'chalk';
+import * as fs from 'fs';
+import {createRequire} from 'module';
+import * as path from 'path';
+
 import {absolutePackagePath, ensureVersionsCompatible, packages, version} from './abqUtils.mjs';
+
 const require = createRequire(import.meta.url);
 
 ensureVersionsCompatible();
 
-
 packages.forEach(pkg => {
   try {
-    const packageJsonPath = path.join(absolutePackagePath(pkg.path), 'package.json');
+    const packageJsonPath =
+        path.join(absolutePackagePath(pkg.path), 'package.json');
 
-    const packageJson = Object.assign(
-      require(packageJsonPath),
-      {
-        name: pkg.rwxName,
-        version,
+    const packageJson = require(packageJsonPath);
+    packageJson.name = pkg.rwxName;
+    packageJson.version = version;
+
+    // Translate dependencies like
+    //   "jest-config": "workspace:^"
+    // to
+    //   "jest-config": "npm:@rwx-research/jest-config@<version>"
+    packages.forEach(({upstreamName, rwxName}) => {
+      if (upstreamName in packageJson.dependencies) {
+        console.assert(
+            packageJson.dependencies[upstreamName].startsWith('workspace'));
+        packageJson.dependencies[upstreamName] = `npm:${rwxName}@${version}`;
       }
-    );
+    })
 
     fs.writeFileSync(
-      packageJsonPath,
-      JSON.stringify(packageJson, null, 2) + '\n'
-    );
+        packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
 
     console.log(`Prepared ${pkg.path}`);
   } catch (err) {
