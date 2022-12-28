@@ -1,6 +1,6 @@
 {
-  "name": "@rwx-research/jest-config",
-  "version": "29.3.100-alpha.0",
+  "name": "jest-config",
+  "version": "29.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
