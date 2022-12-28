@@ -74,15 +74,21 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
 
     const references = tsConfig.references.map(({path}) => path);
 
-    //assert.deepStrictEqual(
-    //  references,
-    //  jestDependenciesOfPackage,
-    //  `Expected declared references to match dependencies in package ${
-    //    pkg.name
-    //  }. Got:\n\n${references.join(
-    //    '\n',
-    //  )}\nExpected:\n\n${jestDependenciesOfPackage.join('\n')}`,
-    //);
+    // RWX-PATCH: we don't care about tsconfigs equating to the package
+    //   dependencies.
+    //   Since we overwrite the package dependencies with rwx-exposed versions
+    //   anyway, and this is only relevant in dev builds, simply ignore the
+    //   check.
+    //
+    // assert.deepStrictEqual(
+    //   references,
+    //   jestDependenciesOfPackage,
+    //   `Expected declared references to match dependencies in package ${
+    //     pkg.name
+    //   }. Got:\n\n${references.join(
+    //     '\n',
+    //   )}\nExpected:\n\n${jestDependenciesOfPackage.join('\n')}`,
+    // );
   }
 });
 
