@@ -2809,14 +2809,14 @@ __metadata:
 
 "@jest/core@file:./packages/jest-core::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 29.3.1
-  resolution: "@jest/core@file:./packages/jest-core#./packages/jest-core::hash=23772c&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "@jest/core@file:./packages/jest-core#./packages/jest-core::hash=86ce4d&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@jest/console": "workspace:^"
     "@jest/reporters": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.3
+    "@rwx-research/abq": 0.1.0-alpha.4
     "@types/node": "*"
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
@@ -2845,7 +2845,7 @@ __metadata:
   peerDependenciesMeta:
     node-notifier:
       optional: true
-  checksum: e5dab163a3489b0072715301e16fe2a034b5a93168d74de32f5f17cc6aa6819c277afcd3d76982d29138ac956ba9da7d2cdfa4fcadbc8654f93a58e3e988b2b4
+  checksum: e6a8db5cd4ecf4c782309e7cc768abe60fe4bc006f854990b2245f2ba1e6f7309c5395e2bbc22fcefb244fb5aee43183437824726dd2e638f516a183d1325a44
   languageName: node
   linkType: hard
 
@@ -2860,7 +2860,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.3
+    "@rwx-research/abq": 0.1.0-alpha.4
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -4177,10 +4177,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rwx-research/abq@npm:0.1.0-alpha.3":
-  version: 0.1.0-alpha.3
-  resolution: "@rwx-research/abq@npm:0.1.0-alpha.3"
-  checksum: 2be76b69fbf4674c5a596220b20cf7090c67dc8ec40e33a7a1bef2c2b62ca69a1853707652c128c9085cb6084e1754f30bc28eac9722d556ed4fca95b03a3855
+"@rwx-research/abq@npm:0.1.0-alpha.4":
+  version: 0.1.0-alpha.4
+  resolution: "@rwx-research/abq@npm:0.1.0-alpha.4"
+  checksum: ffd07e1178242ea57c33c8ddf25081bf8e6d88a6601337485d9905aec5c291eba3b725d6b259103d50554485104983c05fe2120fc69b613b90fd1675f6572cba
   languageName: node
   linkType: hard
 
@@ -12632,12 +12632,12 @@ __metadata:
 
 "jest-config@file:./packages/jest-config::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 29.3.1
-  resolution: "jest-config@file:./packages/jest-config#./packages/jest-config::hash=704573&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "jest-config@file:./packages/jest-config#./packages/jest-config::hash=fb820d&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.3
+    "@rwx-research/abq": 0.1.0-alpha.4
     babel-jest: "workspace:^"
     chalk: ^4.0.0
     ci-info: ^3.2.0
@@ -12665,7 +12665,7 @@ __metadata:
       optional: true
     ts-node:
       optional: true
-  checksum: 9b3c8e1f7737089bb69bb6fb7ea6fe6546564bb1178d3bfac71ab58a007306dcda01ebe9a1d9989345c84dcf4535189336105e2d8ef4585ee2681a2b69532c0a
+  checksum: 140bb33bd17a754662308a4d6f5e261380e25499dd49934495af0e4fa27b703e576c0222e625a2c4640e220036a988c41aeaac3c6d8d6734e80bbd56294231ef
   languageName: node
   linkType: hard
 
@@ -12676,7 +12676,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.3
+    "@rwx-research/abq": 0.1.0-alpha.4
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -13020,14 +13020,14 @@ __metadata:
 
 "jest-runner@file:./packages/jest-runner::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 29.3.1
-  resolution: "jest-runner@file:./packages/jest-runner#./packages/jest-runner::hash=12d2b6&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "jest-runner@file:./packages/jest-runner#./packages/jest-runner::hash=266bce&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@jest/console": "workspace:^"
     "@jest/environment": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.3
+    "@rwx-research/abq": 0.1.0-alpha.4
     "@types/node": "*"
     chalk: ^4.0.0
     emittery: ^0.13.1
@@ -13044,7 +13044,7 @@ __metadata:
     jest-worker: "workspace:^"
     p-limit: ^3.1.0
     source-map-support: 0.5.13
-  checksum: 377e11884cc8f3a68727826ddbfce099e90e474205c84c0fe3b5169e9f1292ee78f632536ad4adf3dc04daf127530b4cd1e8b1986af95ffaae55930ba4e95c6c
+  checksum: 272a029b7046da975ca2d98ba5785376694f8916712439eb5e9b374050123420e8f2df2af353f7afc33b90fa085ab70ed7647afa5fe2551073286dde9ea31704
   languageName: node
   linkType: hard
 
@@ -13057,7 +13057,7 @@ __metadata:
     "@jest/test-result": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.3
+    "@rwx-research/abq": 0.1.0-alpha.4
     "@tsd/typescript": ~4.8.2
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
