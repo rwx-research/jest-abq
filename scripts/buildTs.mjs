@@ -13,7 +13,7 @@ import execa from 'execa';
 import globby from 'globby';
 import fs from 'graceful-fs';
 import pLimit from 'p-limit';
-import stripJsonComments from 'strip-json-comments';
+// import stripJsonComments from 'strip-json-comments';
 import {getPackagesWithTsConfig} from './buildUtils.mjs';
 
 const packagesWithTs = getPackagesWithTsConfig();
@@ -68,17 +68,17 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     .sort();
 
   if (jestDependenciesOfPackage.length > 0) {
-    const tsConfig = JSON.parse(
-      stripJsonComments(fs.readFileSync(`${packageDir}/tsconfig.json`, 'utf8')),
-    );
-
-    const references = tsConfig.references.map(({path}) => path);
-
     // RWX-PATCH: we don't care about tsconfigs equating to the package
     //   dependencies.
     //   Since we overwrite the package dependencies with rwx-exposed versions
     //   anyway, and this is only relevant in dev builds, simply ignore the
     //   check.
+    //
+    // const tsConfig = JSON.parse(
+    //   stripJsonComments(fs.readFileSync(`${packageDir}/tsconfig.json`, 'utf8')),
+    // );
+    //
+    // const references = tsConfig.references.map(({path}) => path);
     //
     // assert.deepStrictEqual(
     //   references,
