@@ -1,4 +1,14 @@
-# Building
+# Releasing
+
+## Bump version
+
+```
+node scripts/abqSetVersion 29.3.100-alpha.0
+```
+
+Commit the version change.
+
+## Publish packages
 
 Get a fresh checkout. Then, in order:
 

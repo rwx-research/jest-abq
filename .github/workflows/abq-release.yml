@@ -1,0 +1,62 @@
+name: Release ABQ Jest
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Get package and tag version
+        id: get_versions
+        run: |
+          {
+            echo "abq_json_version=$(jq -r .version abq.json)"
+            echo "tag_version=${GITHUB_REF_NAME:1}"
+            echo "is_prerelease=$([[ $GITHUB_REF_NAME == v*-* ]] && echo 'true' || echo 'false')"
+          } >> "$GITHUB_OUTPUT"
+      - name: Check version match
+        if: steps.get_versions.outputs.abq_json_version != steps.get_versions.outputs.tag_version
+        run: |
+          echo "Versions do not match."
+          echo "Version from abq.json is ${{ steps.get_versions.outputs.abq_json_version }}"
+          echo "Version from tag is ${{ steps.get_versions.outputs.tag_version }}"
+          exit 2
+      - name: Set up node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+          scope: '@rwx-research'
+          cache: yarn
+      - name: Point to @rwx-research versions of patched packages
+        run: node scripts/abqPrepare.mjs
+      - name: Update lockfile for patched versions
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Publish @rwx-research/jest-runner
+        working-directory: packages/jest-runner
+        run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      - name: Publish @rwx-research/jest-config
+        working-directory: packages/jest-config
+        run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      - name: Publish @rwx-research/jest-core
+        working-directory: packages/jest-core
+        run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: ${{ fromJSON(steps.get_versions.outputs.is_prerelease) }}

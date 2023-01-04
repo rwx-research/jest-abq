@@ -12,8 +12,12 @@ const require = createRequire(import.meta.url);
 export const {packages, version} = require('../abq.json');
 export const upstreamVersion = require('../lerna.json').version;
 
-export function ensureVersionsCompatible() {
-  const parsedRwxVersion = parseVersion(version);
+export function ensureVersionsCompatible(newVersion) {
+  if (typeof newVersion === 'undefined') {
+    newVersion = version;
+  }
+
+  const parsedRwxVersion = parseVersion(newVersion);
   const parsedUpstreamVersion = parseVersion(upstreamVersion);
 
   if (
@@ -21,7 +25,7 @@ export function ensureVersionsCompatible() {
     parsedRwxVersion.minor !== parsedUpstreamVersion.minor
   ) {
     throw new Error(
-      `Major and minor version parts must match. RWX: ${version}; upstream: ${upstreamVersion}`,
+      `Major and minor version parts must match. RWX: ${newVersion}; upstream: ${upstreamVersion}`,
     );
   }
 
@@ -38,7 +42,7 @@ export function ensureVersionsCompatible() {
     parsedRwxVersion.patch > rwxPatchMax
   ) {
     throw new Error(
-      `Expected RWX patch version between ${rwxPatchMin} and ${rwxPatchMax}, not ${parsedRwxVersion.patch}. RWX: ${version}`,
+      `Expected RWX patch version between ${rwxPatchMin} and ${rwxPatchMax}, not ${parsedRwxVersion.patch}. RWX: ${newVersion}`,
     );
   }
 }
@@ -51,6 +55,10 @@ function parseVersion(version) {
   }
 
   return result.groups;
+}
+
+export function absoluteProjectPath() {
+  return fileURLToPath(new URL('..', import.meta.url));
 }
 
 export function absolutePackagePath(packageName) {
