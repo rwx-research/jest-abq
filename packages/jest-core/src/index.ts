@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {getAbqConfiguration} from '@rwx-research/abq';
-
-if (getAbqConfiguration().shouldHideNativeOutput) {
+if (process.env.ABQ_HIDE_NATIVE_OUTPUT) {
   const _doNothing: any = () => {
     // do nothing
   };

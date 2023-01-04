@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Socket} from 'net';
 import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
@@ -22,6 +21,7 @@ import {formatExecError} from 'jest-message-util';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
+import {abqSpawnedMessage} from './abq';
 import runTest from './runTest';
 import type {SerializableResolver} from './testWorker';
 import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
@@ -44,6 +44,7 @@ export type {
 
 type TestWorker = typeof import('./testWorker');
 
+export {abqSpawnedMessage};
 const abqConfig = Abq.getAbqConfiguration();
 
 export default class TestRunner extends EmittingTestRunner {
@@ -127,34 +128,13 @@ export default class TestRunner extends EmittingTestRunner {
       return path.resolve(process.cwd(), testPath);
     }
 
-    // TODO(dtm): pull from abq package
-    async function connect(abqConfig: any): Promise<Socket> {
-      if (!abqConfig.enabled) {
-        throw new Error('abq must be enabled to connect');
-      }
-
-      const socket = new Socket();
-
-      return await new Promise(resolve => {
-        socket.connect(
-          {
-            host: abqConfig.host,
-            port: abqConfig.port,
-          },
-          () => resolve(socket),
-        );
-      });
-    }
-
     return new Promise((resolve, reject) => {
-      connect(abqConfig)
+      Abq.connect(abqConfig, abqSpawnedMessage)
         .then(socket => {
           socket.on('close', () => resolve(undefined));
           return socket;
         })
         .then(async socket => {
-          await Abq.protocolWrite(socket, Abq.spawnedMessage());
-
           Abq.protocolReader(socket, async initOrTestCaseMessage => {
             if ('init_meta' in initOrTestCaseMessage) {
               // This is the initialization message; we don't need it, so just send
@@ -215,8 +195,14 @@ export default class TestRunner extends EmittingTestRunner {
                   return 'stack' in result && 'message' in result;
                 }
 
+                function millisecondToNanosecond(ms: number | bigint): bigint {
+                  return BigInt(ms) * 1000000n;
+                }
+
                 if (resultIsError(result)) {
-                  const estimatedRuntime = estimatedStartTime - Date.now();
+                  const estimatedRuntime = millisecondToNanosecond(
+                    estimatedStartTime - Date.now(),
+                  );
 
                   const formattedError = formatExecError(
                     result,
@@ -233,11 +219,26 @@ export default class TestRunner extends EmittingTestRunner {
                       meta: {},
                       output: formattedError,
                       runtime: estimatedRuntime,
-                      status: 'error',
+                      status: {
+                        backtrace: result.stack
+                          ? result.stack.split('\n')
+                          : undefined,
+                        exception: result.message,
+                        type: 'error',
+                      },
                     },
                   };
                 } else {
-                  const isFailing = result.numFailingTests > 0;
+                  const runtime = result.perfStats
+                    ? millisecondToNanosecond(result.perfStats.runtime)
+                    : 0n;
+
+                  let status: Abq.TestResultStatus;
+                  if (result.numFailingTests > 0) {
+                    status = {type: 'failure'};
+                  } else {
+                    status = {type: 'success'};
+                  }
 
                   testResultMessage = {
                     test_result: {
@@ -245,8 +246,8 @@ export default class TestRunner extends EmittingTestRunner {
                       id: testCase.id,
                       meta: {},
                       output: result.failureMessage,
-                      runtime: result.perfStats ? result.perfStats.runtime : 0,
-                      status: isFailing ? 'failure' : 'success',
+                      runtime,
+                      status,
                     },
                   };
                 }
@@ -260,8 +261,14 @@ export default class TestRunner extends EmittingTestRunner {
                     id: testCase.id,
                     meta: {},
                     output: error.message,
-                    runtime: 0,
-                    status: 'error',
+                    runtime: 0n,
+                    status: {
+                      backtrace: error.stack
+                        ? error.stack.split('\n')
+                        : undefined,
+                      exception: error.message,
+                      type: 'error',
+                    },
                   },
                 };
                 return Abq.protocolWrite(socket, testResultMessage);

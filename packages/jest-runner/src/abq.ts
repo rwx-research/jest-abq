@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {loadJson} from 'json.macro';
 
 const abq = <any>loadJson('../../../abq.json');
