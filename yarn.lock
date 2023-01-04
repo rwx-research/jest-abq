@@ -2660,7 +2660,7 @@ __metadata:
 
 "@jest/core@file:./packages/jest-core::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 29.3.1
-  resolution: "@jest/core@file:./packages/jest-core#./packages/jest-core::hash=b4d922&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "@jest/core@file:./packages/jest-core#./packages/jest-core::hash=67daee&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@jest/console": "workspace:^"
     "@jest/reporters": "workspace:^"
@@ -2699,7 +2699,7 @@ __metadata:
   peerDependenciesMeta:
     node-notifier:
       optional: true
-  checksum: 3289273cd6f838ba0df00282c6bf2a2aa535e65f3fd41c6c70b0f35a233bff9587d637a53bf68aac8f4e6c61d9bcc0bb8dffe735215753e049985ae5b956e53b
+  checksum: bf54f1d34829c5bf2127628f1da0251b1ab22d4bfb1f9d709bd78a4a8c6be9b58dcd3043d8298f8c0cc1c144e85949f0316edba1ad05bf38189b909584c2063b
   languageName: node
   linkType: hard
 
@@ -2714,7 +2714,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
+    "@rwx-research/abq": 0.1.0-alpha.3
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -12486,7 +12486,7 @@ __metadata:
 
 "jest-config@file:./packages/jest-config::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 29.3.1
-  resolution: "jest-config@file:./packages/jest-config#./packages/jest-config::hash=984c30&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "jest-config@file:./packages/jest-config#./packages/jest-config::hash=8b7f02&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
@@ -12522,7 +12522,7 @@ __metadata:
       optional: true
     ts-node:
       optional: true
-  checksum: ae49b640f1cb1756d487278cb97b906ac07ca9a57bb0fa2ab4fbfc1b7b2f2d058477a93d3772df7b673caf3af3fb623be5979d071b22148cf299aba6592ef05d
+  checksum: a07edb12b024fdca5c7549e8ea053b4133b961449eaf5b67f85633c374cef679871a3cf406decb9c281d1aab628b043640fed37d34b0bf8f7b6ec4f70b67eea9
   languageName: node
   linkType: hard
 
@@ -12533,7 +12533,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
+    "@rwx-research/abq": 0.1.0-alpha.3
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -12877,7 +12877,7 @@ __metadata:
 
 "jest-runner@file:./packages/jest-runner::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 29.3.1
-  resolution: "jest-runner@file:./packages/jest-runner#./packages/jest-runner::hash=5bbc36&locator=%40jest%2Fmonorepo%40workspace%3A."
+  resolution: "jest-runner@file:./packages/jest-runner#./packages/jest-runner::hash=e45ba9&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     "@jest/console": "workspace:^"
     "@jest/environment": "workspace:^"
@@ -12907,7 +12907,7 @@ __metadata:
     json.macro: ^1.3.0
     p-limit: ^3.1.0
     source-map-support: 0.5.13
-  checksum: c644ce055461454a67e7f195ad9eafb2ed5d5fa0be3698d2e524483a8d6cb78429e31b6b0bbf71aff23bed4a9e73cc6d808a88fa3d115eb1e204b0ad424f9462
+  checksum: eed106b1174e2a39b828eea23b25482aaa40aab4ce35e9f428df1875c1979d06eef29b41c9fdd1a6bde9166d22cb2f4b352f939b835f12c507207a9bf5d37729
   languageName: node
   linkType: hard
 
@@ -12920,7 +12920,7 @@ __metadata:
     "@jest/test-result": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
+    "@rwx-research/abq": 0.1.0-alpha.3
     "@tsd/typescript": ~4.8.2
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
