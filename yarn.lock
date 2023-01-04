@@ -2657,49 +2657,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/core@file:./packages/jest-core::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 29.3.1
-  resolution: "@jest/core@file:./packages/jest-core#./packages/jest-core::hash=b4d922&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@jest/console": "workspace:^"
-    "@jest/reporters": "workspace:^"
-    "@jest/test-result": "workspace:^"
-    "@jest/transform": "workspace:^"
-    "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
-    "@types/node": "*"
-    ansi-escapes: ^4.2.1
-    chalk: ^4.0.0
-    ci-info: ^3.2.0
-    exit: ^0.1.2
-    graceful-fs: ^4.2.9
-    jest-changed-files: "workspace:^"
-    jest-config: "workspace:^"
-    jest-haste-map: "workspace:^"
-    jest-message-util: "workspace:^"
-    jest-regex-util: "workspace:^"
-    jest-resolve: "workspace:^"
-    jest-resolve-dependencies: "workspace:^"
-    jest-runner: "workspace:^"
-    jest-runtime: "workspace:^"
-    jest-snapshot: "workspace:^"
-    jest-util: "workspace:^"
-    jest-validate: "workspace:^"
-    jest-watcher: "workspace:^"
-    micromatch: ^4.0.4
-    pretty-format: "workspace:^"
-    slash: ^3.0.0
-    strip-ansi: ^6.0.0
-  peerDependencies:
-    node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
-  peerDependenciesMeta:
-    node-notifier:
-      optional: true
-  checksum: 3289273cd6f838ba0df00282c6bf2a2aa535e65f3fd41c6c70b0f35a233bff9587d637a53bf68aac8f4e6c61d9bcc0bb8dffe735215753e049985ae5b956e53b
-  languageName: node
-  linkType: hard
-
-"@jest/core@workspace:packages/jest-core":
+"@jest/core@workspace:^, @jest/core@workspace:packages/jest-core":
   version: 0.0.0-use.local
   resolution: "@jest/core@workspace:packages/jest-core"
   dependencies:
@@ -2710,7 +2668,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
+    "@rwx-research/abq": 0.1.0-alpha.3
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -4027,10 +3985,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rwx-research/abq@npm:0.1.0-alpha.0":
-  version: 0.1.0-alpha.0
-  resolution: "@rwx-research/abq@npm:0.1.0-alpha.0"
-  checksum: eab590d7a1a2d97f7a5a9cc5dc595ad989265d3e9aadb7a813275e00e5c4f381d1910065203eef00ed439bb41bbedca5daea65f96553afb1a929511a37f69f0c
+"@rwx-research/abq@npm:0.1.0-alpha.3":
+  version: 0.1.0-alpha.3
+  resolution: "@rwx-research/abq@npm:0.1.0-alpha.3"
+  checksum: 2be76b69fbf4674c5a596220b20cf7090c67dc8ec40e33a7a1bef2c2b62ca69a1853707652c128c9085cb6084e1754f30bc28eac9722d556ed4fca95b03a3855
   languageName: node
   linkType: hard
 
@@ -12430,53 +12388,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"jest-config@file:./packages/jest-config::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 29.3.1
-  resolution: "jest-config@file:./packages/jest-config#./packages/jest-config::hash=984c30&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@babel/core": ^7.11.6
-    "@jest/test-sequencer": "workspace:^"
-    "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
-    babel-jest: "workspace:^"
-    chalk: ^4.0.0
-    ci-info: ^3.2.0
-    deepmerge: ^4.2.2
-    glob: ^7.1.3
-    graceful-fs: ^4.2.9
-    jest-circus: "workspace:^"
-    jest-environment-node: "workspace:^"
-    jest-get-type: "workspace:^"
-    jest-regex-util: "workspace:^"
-    jest-resolve: "workspace:^"
-    jest-runner: "workspace:^"
-    jest-util: "workspace:^"
-    jest-validate: "workspace:^"
-    micromatch: ^4.0.4
-    parse-json: ^5.2.0
-    pretty-format: "workspace:^"
-    slash: ^3.0.0
-    strip-json-comments: ^3.1.1
-  peerDependencies:
-    "@types/node": "*"
-    ts-node: ">=9.0.0"
-  peerDependenciesMeta:
-    "@types/node":
-      optional: true
-    ts-node:
-      optional: true
-  checksum: ae49b640f1cb1756d487278cb97b906ac07ca9a57bb0fa2ab4fbfc1b7b2f2d058477a93d3772df7b673caf3af3fb623be5979d071b22148cf299aba6592ef05d
-  languageName: node
-  linkType: hard
-
-"jest-config@workspace:packages/jest-config":
+"jest-config@workspace:^, jest-config@workspace:packages/jest-config":
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
+    "@rwx-research/abq": 0.1.0-alpha.3
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -12818,37 +12737,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-runner@file:./packages/jest-runner::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 29.3.1
-  resolution: "jest-runner@file:./packages/jest-runner#./packages/jest-runner::hash=5bbc36&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@jest/console": "workspace:^"
-    "@jest/environment": "workspace:^"
-    "@jest/test-result": "workspace:^"
-    "@jest/transform": "workspace:^"
-    "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
-    "@types/node": "*"
-    chalk: ^4.0.0
-    emittery: ^0.13.1
-    graceful-fs: ^4.2.9
-    jest-docblock: "workspace:^"
-    jest-environment-node: "workspace:^"
-    jest-haste-map: "workspace:^"
-    jest-leak-detector: "workspace:^"
-    jest-message-util: "workspace:^"
-    jest-resolve: "workspace:^"
-    jest-runtime: "workspace:^"
-    jest-util: "workspace:^"
-    jest-watcher: "workspace:^"
-    jest-worker: "workspace:^"
-    p-limit: ^3.1.0
-    source-map-support: 0.5.13
-  checksum: c644ce055461454a67e7f195ad9eafb2ed5d5fa0be3698d2e524483a8d6cb78429e31b6b0bbf71aff23bed4a9e73cc6d808a88fa3d115eb1e204b0ad424f9462
-  languageName: node
-  linkType: hard
-
-"jest-runner@workspace:packages/jest-runner":
+"jest-runner@workspace:^, jest-runner@workspace:packages/jest-runner":
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
@@ -12857,7 +12746,7 @@ __metadata:
     "@jest/test-result": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.0
+    "@rwx-research/abq": 0.1.0-alpha.3
     "@tsd/typescript": ~4.8.2
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
