@@ -35,6 +35,8 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: '@rwx-research'
           cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
       - name: Point to @rwx-research versions of patched packages
         run: node scripts/abqPrepare.mjs
       - name: Update lockfile for patched versions
