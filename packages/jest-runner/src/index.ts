@@ -16,6 +16,7 @@ import type {
   TestEvents,
   TestFileEvent,
   TestResult,
+  TestCaseResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
