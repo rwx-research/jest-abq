@@ -441,6 +441,8 @@ function formatAbqStatus(
         backtrace: backtraces,
         exception: exceptions,
         type: 'failure',
+        backtrace: backtraces,
+        exception: exceptions,
       };
     }
     case 'pending': {
