@@ -18,7 +18,14 @@ import type {
   TestCaseResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {formatExecError} from 'jest-message-util';
+import {
+  formatExecError,
+  formatResultsErrors,
+  getStackTraceLines,
+  separateMessageFromStack,
+  StackTraceConfig,
+  StackTraceOptions,
+} from 'jest-message-util';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
@@ -128,8 +135,10 @@ export default class TestRunner extends EmittingTestRunner {
     function resolveTestPath(testPath: string): string {
       return path.resolve(process.cwd(), testPath);
     }
+    console.error('creating abq run');
 
     return new Promise((resolve, reject) => {
+      console.error('starting');
       Abq.connect(abqConfig, abqSpawnedMessage)
         .then(socket => {
           socket.on('close', () => resolve(undefined));
@@ -201,6 +210,8 @@ export default class TestRunner extends EmittingTestRunner {
                   const testResults = formatAbqFileTestResults(
                     fileName,
                     result,
+                    test.context.config,
+                    testConfig,
                     estimatedRuntime,
                   );
 
@@ -392,14 +403,43 @@ function formatAbqLocation(
 
 function formatAbqStatus(
   status: TestCaseResult['status'],
+  failureMessages: string[],
+  options: StackTraceOptions,
 ): Abq.TestResultStatus {
   switch (status) {
     case 'passed': {
       return {type: 'success'};
     }
     case 'failed': {
+      if (failureMessages.length === 0) {
+        return {
+          type: 'failure',
+        };
+      }
+      const backtraces: string[] = [];
+      let exceptions = '';
+      for (const errorAndBt of failureMessages) {
+        const {message, stack} = separateMessageFromStack(errorAndBt);
+        let optnewline = exceptions.length === 0 ? '' : '\n';
+        exceptions += `${optnewline}${message}`;
+
+        const stackTraceLines = getStackTraceLines(stack, options);
+        if (backtraces.length > 0) {
+          backtraces.push('\n');
+        }
+        for (const stackTraceLine of stackTraceLines) {
+          // The formatter might keep around leading whitespace or empty lines;
+          // drop those.
+          const stLine = stackTraceLine.trimLeft();
+          if (stLine.length > 0) {
+            backtraces.push(stLine);
+          }
+        }
+      }
       return {
         type: 'failure',
+        backtrace: backtraces,
+        exception: exceptions,
       };
     }
     case 'pending': {
@@ -420,6 +460,8 @@ function formatAbqStatus(
 function formatAbqFileTestResults(
   fileName: string,
   jestTestFileResult: TestResult,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
   estimatedRuntime: Abq.Nanoseconds,
 ): Abq.TestResult[] {
   const results: Abq.TestResult[] = [];
@@ -443,14 +485,22 @@ function formatAbqFileTestResults(
         : estimatedRuntime;
 
     const location = formatAbqLocation(fileName, optCallsite);
-    const status = formatAbqStatus(jestStatus);
+    const status = formatAbqStatus(jestStatus, failureMessages, options);
+
+    const output = formatResultsErrors(
+      [jestResult],
+      // XREF jest-jasmine2's calling of formatResultsErrors
+      config,
+      options,
+      jestTestFileResult.testFilePath,
+    );
 
     const result: Abq.TestResult = {
       display_name: fullName,
       id: fullName,
       status,
       meta: {},
-      output: failureMessages.join('\n'),
+      output,
       runtime,
       location,
       lineage: ancestorTitles,

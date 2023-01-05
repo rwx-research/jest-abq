@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ABQ mode handles errors in a test 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "this test is erroring",
+      "id": "this test is erroring",
+      "lineage": Array [],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/errors.test.js",
+      },
+      "meta": Object {},
+      "output": "  ● this test is erroring
+
+    can't catch me
+
+      1 | test('this test is erroring', () => {
+    > 2 |   throw new Error("can't catch me");
+        |         ^
+      3 | });
+      4 |
+
+      at Object.<anonymous> (__tests__/errors.test.js:2:9)
+",
+      "runtime": 12,
+      "status": Object {
+        "backtrace": Array [
+          "at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/errors.test.js:2:9)",
+        ],
+        "exception": "can't catch me",
+        "type": "failure",
+      },
+    },
+  ],
+]
+`;
+
+exports[`ABQ mode handles errors outside of test execution 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "<<REPLACED>>/e2e/abq/__tests__/error_setup.test.js",
+      "id": "<<REPLACED>>/e2e/abq/__tests__/error_setup.test.js",
+      "meta": Object {},
+      "output": "  ●  can't catch me
+
+    > 1 | throw new Error("can't catch me");
+        |                 ^
+      2 |
+      3 | test('true', () => {
+      4 |   expect(true).toBe(true);
+
+      at Object.<anonymous> (__tests__/error_setup.test.js:1:17)
+",
+      "runtime": 12,
+      "status": Object {
+        "backtrace": Array [
+          "Error: can't catch me",
+          "    at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/error_setup.test.js:1:17)",
+          "    at Runtime._execModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1377:24)",
+          "    at Runtime._loadModule (<<REPLACED>>/packages/jest-runtime/build/index.js:989:12)",
+          "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:849:12)",
+          "    at jestAdapter (<<REPLACED>>/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:72:13)",
+          "    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+          "    at runTestInternal (<<REPLACED>>/node_modules/jest-runner/build/runTest.js:367:16)",
+          "    at runTest (<<REPLACED>>/node_modules/jest-runner/build/runTest.js:444:34)",
+          "    at <<REPLACED>>/node_modules/jest-runner/build/index.js:240:13",
+        ],
+        "exception": "can't catch me",
+        "type": "error",
+      },
+    },
+  ],
+]
+`;
+
+exports[`ABQ_GENERATE_MANIFEST sends the manifest to the socket 1`] = `
+Array [
+  Object {
+    "manifest": Object {
+      "init_meta": Object {},
+      "members": Array [
+        Object {
+          "id": "__tests__/equals.test.js",
+          "meta": Object {
+            "fileName": "__tests__/equals.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/error_setup.test.js",
+          "meta": Object {
+            "fileName": "__tests__/error_setup.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/errors.test.js",
+          "meta": Object {
+            "fileName": "__tests__/errors.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/failing.test.js",
+          "meta": Object {
+            "fileName": "__tests__/failing.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/sum.test.js",
+          "meta": Object {
+            "fileName": "__tests__/sum.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`ABQ_SOCKET runs Jest in ABQ mode 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "this test is failing",
+      "id": "this test is failing",
+      "lineage": Array [],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/failing.test.js",
+      },
+      "meta": Object {},
+      "output": "  ● this test is failing
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      1 | test('this test is failing', () => {
+    > 2 |   expect(true).toBe(false);
+        |                ^
+      3 | });
+      4 |
+
+      at Object.toBe (__tests__/failing.test.js:2:16)
+",
+      "runtime": 12,
+      "status": Object {
+        "backtrace": Array [
+          "at Object.toBe (<<REPLACED>>/e2e/abq/__tests__/failing.test.js:2:16)",
+        ],
+        "exception": "expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true",
+        "type": "failure",
+      },
+    },
+  ],
+  Array [
+    Object {
+      "display_name": "the + operator 1 + 2 equals 3",
+      "id": "the + operator 1 + 2 equals 3",
+      "lineage": Array [
+        "the + operator",
+      ],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "the + operator 2 + 3 equals 5",
+      "id": "the + operator 2 + 3 equals 5",
+      "lineage": Array [
+        "the + operator",
+      ],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "the + operator with three operands 2 + 3 + 4 equals 9",
+      "id": "the + operator with three operands 2 + 3 + 4 equals 9",
+      "lineage": Array [
+        "the + operator",
+        "with three operands",
+      ],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+  ],
+]
+`;
+
+exports[`Reports all tests in a file 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "the + operator 1 + 2 equals 3",
+      "id": "the + operator 1 + 2 equals 3",
+      "lineage": Array [
+        "the + operator",
+      ],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "the + operator 2 + 3 equals 5",
+      "id": "the + operator 2 + 3 equals 5",
+      "lineage": Array [
+        "the + operator",
+      ],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "the + operator with three operands 2 + 3 + 4 equals 9",
+      "id": "the + operator with three operands 2 + 3 + 4 equals 9",
+      "lineage": Array [
+        "the + operator",
+        "with three operands",
+      ],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+  ],
+]
+`;
