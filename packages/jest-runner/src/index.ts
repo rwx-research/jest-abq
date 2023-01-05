@@ -479,10 +479,12 @@ function formatAbqFileTestResults(
       title: _title,
     } = jestResult;
 
-    const runtime =
-      typeof duration === 'number'
-        ? millisecondToNanosecond(duration)
-        : estimatedRuntime;
+    // It appears that jest runners will sometimes report the duration observed
+    // for a failure after the first in a file as zero-timed; in these cases,
+    // use the estimated runtime.
+    const runtime = duration
+      ? millisecondToNanosecond(duration)
+      : estimatedRuntime;
 
     const location = formatAbqLocation(fileName, optCallsite);
     const status = formatAbqStatus(jestStatus, failureMessages, options);
