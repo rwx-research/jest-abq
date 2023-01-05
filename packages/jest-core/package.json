@@ -17,7 +17,7 @@
     "@jest/test-result": "workspace:^",
     "@jest/transform": "workspace:^",
     "@jest/types": "workspace:^",
-    "@rwx-research/abq": "0.1.0-alpha.4",
+    "@rwx-research/abq": "0.1.0-alpha.5",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
