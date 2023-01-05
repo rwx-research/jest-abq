@@ -195,8 +195,8 @@ export default class TestRunner extends EmittingTestRunner {
                   return 'stack' in result && 'message' in result;
                 }
 
-                function millisecondToNanosecond(ms: number | bigint): bigint {
-                  return BigInt(ms) * 1000000n;
+                function millisecondToNanosecond(ms: number): number {
+                  return ms * 1000000;
                 }
 
                 if (resultIsError(result)) {
@@ -231,7 +231,7 @@ export default class TestRunner extends EmittingTestRunner {
                 } else {
                   const runtime = result.perfStats
                     ? millisecondToNanosecond(result.perfStats.runtime)
-                    : 0n;
+                    : 0;
 
                   let status: Abq.TestResultStatus;
                   if (result.numFailingTests > 0) {
@@ -261,7 +261,7 @@ export default class TestRunner extends EmittingTestRunner {
                     id: testCase.id,
                     meta: {},
                     output: error.message,
-                    runtime: 0n,
+                    runtime: 0,
                     status: {
                       backtrace: error.stack
                         ? error.stack.split('\n')
