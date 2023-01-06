@@ -48,8 +48,8 @@ Array [
     > 1 | throw new Error("can't catch me");
         |                 ^
       2 |
-      3 | test('true', () => {
-      4 |   expect(true).toBe(true);
+      3 | // eslint-disable-next-line no-unreachable
+      4 | test('true', () => {
 
       at Object.<anonymous> (__tests__/error_setup.test.js:1:17)
 ",
@@ -63,9 +63,9 @@ Array [
           "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:849:12)",
           "    at jestAdapter (<<REPLACED>>/packages/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:72:13)",
           "    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
-          "    at runTestInternal (<<REPLACED>>/node_modules/jest-runner/build/runTest.js:367:16)",
-          "    at runTest (<<REPLACED>>/node_modules/jest-runner/build/runTest.js:444:34)",
-          "    at <<REPLACED>>/node_modules/jest-runner/build/index.js:240:13",
+          "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:281:16)",
+          "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:341:7)",
+          "    at <<REPLACED>>/packages/jest-runner/build/index.js:216:11",
         ],
         "exception": "can't catch me",
         "type": "error",
