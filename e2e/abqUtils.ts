@@ -34,7 +34,9 @@ export async function runAbqJest(env: Record<string, string>, cb: any) {
 
 function replacePath<T>(str: T) {
   if (typeof str === 'string') {
-    return str.replace(path.resolve(__dirname, '../'), '<<REPLACED>>');
+    return str
+      .replace(path.resolve(__dirname, '../'), '<<REPLACED>>')
+      .replace('\\', '/');
   }
   return str;
 }
