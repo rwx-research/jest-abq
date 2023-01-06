@@ -2,11 +2,11 @@ const Net = require('net');
 
 function protocolRead(stream) {
   return new Promise((resolve, reject) => {
-    let resolver = function() {
-      let buf = stream.read(4);
+    const resolver = function () {
+      const buf = stream.read(4);
       console.log('SERVER', buf);
-      let messageSize = buf.readUInt32BE(0);
-      let msg = stream.read(messageSize);
+      const messageSize = buf.readUInt32BE(0);
+      const msg = stream.read(messageSize);
 
       stream.removeListener('readable', resolver);
 
@@ -29,13 +29,13 @@ function protocolReader(stream, handler) {
     }
     if (messageSize && buffer.length >= messageSize + 4) {
       // We now know the whole message is available; get it.
-      let currentMessage = buffer.toString('utf8', 4, 4 + messageSize);
+      const currentMessage = buffer.toString('utf8', 4, 4 + messageSize);
 
       // There might be an additional message waiting for us behind the one we
       // just parsed. Reset the buffer to this new message before we handle the
       // current message, so that incoming messages can continue to be
       // processed.
-      let newBuffer = buffer.slice(4 + messageSize);
+      const newBuffer = buffer.slice(4 + messageSize);
       buffer = newBuffer;
 
       handler(currentMessage);
@@ -74,12 +74,12 @@ server.on('listening', () => {
   process.send({socketString: `localhost:${server.address().port}`});
 });
 
-server.on('connection', async (socket) => {
+server.on('connection', async socket => {
   console.log('SERVER:', 'A new connection has been established.');
 
   // We'll always receive the spawn message first.
   {
-    let msg = await protocolRead(socket);
+    const msg = await protocolRead(socket);
     const data = JSON.parse(msg);
     console.assert(data.type === 'abq_native_runner_spawned');
   }
@@ -110,8 +110,8 @@ server.on('connection', async (socket) => {
     await protocolWrite(socket, sendNextTest());
   }
 
-  protocolReader(socket, (message) => {
-    let data = JSON.parse(message);
+  protocolReader(socket, message => {
+    const data = JSON.parse(message);
 
     if (data.manifest) {
       process.send(data);

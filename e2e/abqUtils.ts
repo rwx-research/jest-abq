@@ -1,5 +1,10 @@
 import * as path from 'path';
-import type {AbqTypes} from '../packages/jest-types/src';
+import type {
+  ManifestMember,
+  ManifestSuccessMessage,
+  TestResult,
+  TestResultMessage,
+} from '@rwx-research/abq';
 import runJest from './runJest';
 
 export function pathForAbqTestFile(file: string) {
@@ -27,16 +32,14 @@ function replacePath<T>(str: T) {
   return str;
 }
 
-function sortMembers(m1: AbqTypes.ManifestMember, m2: AbqTypes.ManifestMember) {
+function sortMembers(m1: ManifestMember, m2: ManifestMember) {
   const m1Name = m1.type === 'group' ? m1.name : m1.id;
   const m2Name = m2.type === 'group' ? m2.name : m2.id;
 
   return m1Name.localeCompare(m2Name);
 }
 
-function filterMemberForSnapshot(
-  member: AbqTypes.ManifestMember,
-): AbqTypes.ManifestMember {
+function filterMemberForSnapshot(member: ManifestMember): ManifestMember {
   if (member.type === 'test') {
     return {
       ...member,
@@ -56,33 +59,40 @@ function filterMemberForSnapshot(
 }
 
 export function filterManifestForSnapshot(
-  manifestMessage: AbqTypes.ManifestMessage,
+  manifestMessage: ManifestSuccessMessage,
 ) {
   return {
     manifest: {
+      init_meta: manifestMessage.manifest.init_meta,
       members: manifestMessage.manifest.members
         .map(filterMemberForSnapshot)
         .sort(sortMembers),
-      init_meta: manifestMessage.manifest.init_meta,
     },
   };
 }
 
 export function filterTestResultForSnapshot(
-  testResultMessage: AbqTypes.TestResultMessage,
+  testResultMessage: TestResultMessage,
 ) {
   let results;
-  if (testResultMessage.test_result) {
+  if ('test_result' in testResultMessage && testResultMessage.test_result) {
     results = [testResultMessage.test_result];
-  } else {
+  } else if (
+    'test_results' in testResultMessage &&
+    testResultMessage.test_results
+  ) {
     results = testResultMessage.test_results;
+  } else {
+    throw new Error(
+      `Unknown testResultMessage type: needs test_result or test_results, got ${Object.keys(
+        testResultMessage,
+      ).join(', ')}`,
+    );
   }
   return results.map(filterTestResultsForSnapshotHelp);
 }
 
-export function filterTestResultsForSnapshotHelp(
-  testResult: AbqTypes.TestResult,
-) {
+export function filterTestResultsForSnapshotHelp(testResult: TestResult) {
   const result = {
     ...testResult,
     display_name: replacePath(testResult.display_name),
@@ -93,7 +103,7 @@ export function filterTestResultsForSnapshotHelp(
   if (result.location) {
     result.location.file = replacePath(result.location.file);
   }
-  if (result.status.backtrace) {
+  if ('backtrace' in result.status && result.status.backtrace) {
     result.status.backtrace = result.status.backtrace.map(replacePath);
   }
   return result;

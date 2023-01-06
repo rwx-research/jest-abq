@@ -12,19 +12,19 @@ import Emittery = require('emittery');
 import pLimit = require('p-limit');
 import type {
   Test,
+  TestCaseResult,
   TestEvents,
   TestFileEvent,
   TestResult,
-  TestCaseResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
+  StackTraceConfig,
+  StackTraceOptions,
   formatExecError,
   formatResultsErrors,
   getStackTraceLines,
   separateMessageFromStack,
-  StackTraceConfig,
-  StackTraceOptions,
 } from 'jest-message-util';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
@@ -395,15 +395,15 @@ function formatAbqLocation(
   callsite: TestCaseResult['location'],
 ): Abq.Location {
   return {
+    column: callsite?.column,
     file: fileName,
     line: callsite?.line,
-    column: callsite?.column,
   };
 }
 
 function formatAbqStatus(
   status: TestCaseResult['status'],
-  failureMessages: string[],
+  failureMessages: Array<string>,
   options: StackTraceOptions,
 ): Abq.TestResultStatus {
   switch (status) {
@@ -416,11 +416,11 @@ function formatAbqStatus(
           type: 'failure',
         };
       }
-      const backtraces: string[] = [];
+      const backtraces: Array<string> = [];
       let exceptions = '';
       for (const errorAndBt of failureMessages) {
         const {message, stack} = separateMessageFromStack(errorAndBt);
-        let optnewline = exceptions.length === 0 ? '' : '\n';
+        const optnewline = exceptions.length === 0 ? '' : '\n';
         exceptions += `${optnewline}${message}`;
 
         const stackTraceLines = getStackTraceLines(stack, options);
@@ -437,9 +437,9 @@ function formatAbqStatus(
         }
       }
       return {
-        type: 'failure',
         backtrace: backtraces,
         exception: exceptions,
+        type: 'failure',
       };
     }
     case 'pending': {
@@ -463,9 +463,10 @@ function formatAbqFileTestResults(
   config: StackTraceConfig,
   options: StackTraceOptions,
   estimatedRuntime: Abq.Nanoseconds,
-): Abq.TestResult[] {
-  const results: Abq.TestResult[] = [];
+): Array<Abq.TestResult> {
+  const results: Array<Abq.TestResult> = [];
   for (const jestResult of jestTestFileResult.testResults) {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
       ancestorTitles,
       duration,
@@ -478,6 +479,7 @@ function formatAbqFileTestResults(
       status: jestStatus,
       title: _title,
     } = jestResult;
+    /* eslint-enable @typescript-eslint/no-unused-vars */
 
     // It appears that jest runners will sometimes report the duration observed
     // for a failure after the first in a file as zero-timed; in these cases,
@@ -500,12 +502,12 @@ function formatAbqFileTestResults(
     const result: Abq.TestResult = {
       display_name: fullName,
       id: fullName,
-      status,
+      lineage: ancestorTitles,
+      location,
       meta: {},
       output,
       runtime,
-      location,
-      lineage: ancestorTitles,
+      status,
     };
     results.push(result);
   }
