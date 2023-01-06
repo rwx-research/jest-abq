@@ -15,18 +15,19 @@ Array [
 
     can't catch me
 
-      1 | test('this test is erroring', () => {
-    > 2 |   throw new Error("can't catch me");
-        |         ^
-      3 | });
-      4 |
+       7 |
+       8 | test('this test is erroring', () => {
+    >  9 |   throw new Error("can't catch me");
+         |         ^
+      10 | });
+      11 |
 
-      at Object.<anonymous> (__tests__/errors.test.js:2:9)
+      at Object.<anonymous> (__tests__/errors.test.js:9:9)
 ",
       "runtime": 12,
       "status": Object {
         "backtrace": Array [
-          "at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/errors.test.js:2:9)",
+          "at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/errors.test.js:9:9)",
         ],
         "exception": "can't catch me",
         "type": "failure",
@@ -45,19 +46,21 @@ Array [
       "meta": Object {},
       "output": "  ●  can't catch me
 
-    > 1 | throw new Error("can't catch me");
-        |                 ^
-      2 |
-      3 | // eslint-disable-next-line no-unreachable
-      4 | test('true', () => {
+       6 |  */
+       7 |
+    >  8 | throw new Error("can't catch me");
+         |       ^
+       9 |
+      10 | // eslint-disable-next-line no-unreachable
+      11 | test('true', () => {
 
-      at Object.<anonymous> (__tests__/error_setup.test.js:1:17)
+      at Object.<anonymous> (__tests__/error_setup.test.js:8:7)
 ",
       "runtime": 12,
       "status": Object {
         "backtrace": Array [
           "Error: can't catch me",
-          "    at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/error_setup.test.js:1:17)",
+          "    at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/error_setup.test.js:8:7)",
           "    at Runtime._execModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1377:24)",
           "    at Runtime._loadModule (<<REPLACED>>/packages/jest-runtime/build/index.js:989:12)",
           "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:849:12)",
@@ -145,18 +148,19 @@ Array [
     Expected: false
     Received: true
 
-      1 | test('this test is failing', () => {
-    > 2 |   expect(true).toBe(false);
-        |                ^
-      3 | });
-      4 |
+       7 |
+       8 | test('this test is failing', () => {
+    >  9 |   expect(true).toBe(false);
+         |                ^
+      10 | });
+      11 |
 
-      at Object.toBe (__tests__/failing.test.js:2:16)
+      at Object.toBe (__tests__/failing.test.js:9:16)
 ",
       "runtime": 12,
       "status": Object {
         "backtrace": Array [
-          "at Object.toBe (<<REPLACED>>/e2e/abq/__tests__/failing.test.js:2:16)",
+          "at Object.toBe (<<REPLACED>>/e2e/abq/__tests__/failing.test.js:9:16)",
         ],
         "exception": "expect(received).toBe(expected) // Object.is equality
 
