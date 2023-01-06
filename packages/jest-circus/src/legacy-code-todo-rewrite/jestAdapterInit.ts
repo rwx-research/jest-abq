@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as net from 'net';
 import type {JestEnvironment} from '@jest/environment';
 import {JestExpect, jestExpect} from '@jest/expect';
 import {
@@ -45,6 +46,7 @@ export const initialize = async ({
   sendMessageToJest,
   setGlobalsForRuntime,
   testPath,
+  abqSocket,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
@@ -54,6 +56,7 @@ export const initialize = async ({
   parentProcess: NodeJS.Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
+  abqSocket: net.Socket;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotState;
@@ -96,6 +99,10 @@ export const initialize = async ({
     parentProcess,
     runtimeGlobals,
     testNamePattern: globalConfig.testNamePattern,
+    config,
+    globalConfig,
+    testPath,
+    abqSocket,
   });
 
   if (config.testLocationInResults) {

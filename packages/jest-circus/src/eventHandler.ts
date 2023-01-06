@@ -5,11 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Circus} from '@jest/types';
+import type {Status} from '@jest/test-result';
+import type {Circus, TestResult} from '@jest/types';
+import * as Abq from '@rwx-research/abq';
+import {
+  formatResultsErrors,
+  getStackTraceLines,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
+import {ROOT_DESCRIBE_BLOCK_NAME} from './state';
 import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
@@ -17,6 +25,7 @@ import {
   getTestDuration,
   invariant,
   makeDescribe,
+  makeSingleTestResult,
   makeTest,
 } from './utils';
 
@@ -193,6 +202,9 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     case 'test_done': {
       event.test.duration = getTestDuration(event.test);
       event.test.status = 'done';
+      if (state.abqSocket) {
+        sendAbqTest(state, event.test);
+      }
       state.currentlyRunningTest = null;
       break;
     }
@@ -250,6 +262,10 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       if (event.testNamePattern) {
         state.testNamePattern = new RegExp(event.testNamePattern, 'i');
       }
+      state.config = event.config;
+      state.globalConfig = event.globalConfig;
+      state.testPath = event.testPath;
+      state.abqSocket = event.abqSocket;
       break;
     }
     case 'teardown': {
@@ -259,6 +275,11 @@ const eventHandler: Circus.EventHandler = (event, state) => {
         state.parentProcess,
         state.originalGlobalErrorHandlers,
       );
+      // Don't leak the config handles
+      state.config = null;
+      state.globalConfig = null;
+      state.testPath = null;
+      state.abqSocket = null;
       break;
     }
     case 'error': {
@@ -276,5 +297,172 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
   }
 };
+
+function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
+  const result = formatAbqTestResult(state, test);
+  const msg = {
+    type: 'incremental_result',
+    one_test_result: result,
+  };
+  Abq.protocolWrite(state.abqSocket!, msg as any);
+}
+
+function formatAbqStatus(
+  state: Circus.State,
+  status: TestResult.AssertionResult['status'],
+  failureMessages: Array<string>,
+): Abq.TestResultStatus {
+  switch (status) {
+    case 'passed': {
+      return {type: 'success'};
+    }
+    case 'failed': {
+      if (failureMessages.length === 0) {
+        return {
+          type: 'failure',
+        };
+      }
+      const backtraces: Array<string> = [];
+      let exceptions = '';
+      for (const errorAndBt of failureMessages) {
+        const {message, stack} = separateMessageFromStack(errorAndBt);
+        const optnewline = exceptions.length === 0 ? '' : '\n';
+        exceptions += `${optnewline}${message}`;
+
+        const stackTraceLines = getStackTraceLines(stack, state.globalConfig!);
+        if (backtraces.length > 0) {
+          backtraces.push('\n');
+        }
+        for (const stackTraceLine of stackTraceLines) {
+          // The formatter might keep around leading whitespace or empty lines;
+          // drop those.
+          const stLine = stackTraceLine.trimLeft();
+          if (stLine.length > 0) {
+            backtraces.push(stLine);
+          }
+        }
+      }
+      return {
+        backtrace: backtraces,
+        exception: exceptions,
+        type: 'failure',
+      };
+    }
+    case 'pending': {
+      return {type: 'pending'};
+    }
+    case 'skipped': {
+      return {type: 'skipped'};
+    }
+    case 'todo': {
+      return {type: 'todo'};
+    }
+    case 'disabled': {
+      return {type: 'skipped'};
+    }
+  }
+}
+
+function millisecondToNanosecond(ms: number): number {
+  return ms * 1000000;
+}
+
+function formatAbqLocation(
+  fileName: string,
+  callsite: TestResult.AssertionResult['location'],
+): Abq.Location {
+  return {
+    column: callsite?.column,
+    file: fileName,
+    line: callsite?.line,
+  };
+}
+
+function formatAbqTestResult(
+  state: Circus.State,
+  testEntry: Circus.TestEntry,
+): Abq.TestResult {
+  const testResult = toSingleJestAssertionResult(
+    makeSingleTestResult(testEntry),
+  );
+
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const {
+    ancestorTitles,
+    duration,
+    failureDetails: _failureDetails,
+    failureMessages,
+    fullName,
+    location: optCallsite,
+    numPassingAsserts: _numPassingAsserts,
+    retryReasons: _retryReasons,
+    status: jestStatus,
+    title: _title,
+  } = testResult;
+  /* eslint-enable @typescript-eslint/no-unused-vars */
+
+  // It appears that jest runners will sometimes report the duration observed
+  // for a failure after the first in a file as zero-timed; in these cases,
+  // use the estimated runtime.
+  const runtime = duration ? millisecondToNanosecond(duration) : 99999999;
+
+  const location = formatAbqLocation(state.testPath!, optCallsite);
+  const status = formatAbqStatus(state, jestStatus, failureMessages);
+
+  const output = formatResultsErrors(
+    [testResult],
+    // XREF jestAdapterInit's calling of formatResultsErrors
+    state.config!,
+    state.globalConfig!,
+    state.testPath!,
+  );
+
+  return {
+    display_name: fullName,
+    id: fullName,
+    lineage: ancestorTitles,
+    location,
+    meta: {},
+    output,
+    runtime,
+    status,
+  };
+}
+
+function toSingleJestAssertionResult(
+  testResult: Circus.TestResult,
+): TestResult.AssertionResult {
+  let status: Status;
+  if (testResult.status === 'skip') {
+    status = 'pending';
+  } else if (testResult.status === 'todo') {
+    status = 'todo';
+  } else if (testResult.errors.length) {
+    status = 'failed';
+  } else {
+    status = 'passed';
+  }
+
+  const ancestorTitles = testResult.testPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const title = ancestorTitles.pop();
+
+  return {
+    ancestorTitles,
+    duration: testResult.duration,
+    failureDetails: testResult.errorsDetailed,
+    failureMessages: testResult.errors,
+    fullName: title
+      ? ancestorTitles.concat(title).join(' ')
+      : ancestorTitles.join(' '),
+    invocations: testResult.invocations,
+    location: testResult.location,
+    numPassingAsserts: 0,
+    retryReasons: testResult.retryReasons,
+    status,
+    title: testResult.testPath[testResult.testPath.length - 1],
+  };
+}
 
 export default eventHandler;

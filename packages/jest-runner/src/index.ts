@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as net from 'net';
 import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
@@ -12,20 +13,12 @@ import Emittery = require('emittery');
 import pLimit = require('p-limit');
 import type {
   Test,
-  TestCaseResult,
   TestEvents,
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {
-  StackTraceConfig,
-  StackTraceOptions,
-  formatExecError,
-  formatResultsErrors,
-  getStackTraceLines,
-  separateMessageFromStack,
-} from 'jest-message-util';
+import {formatExecError} from 'jest-message-util';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
@@ -98,6 +91,7 @@ export default class TestRunner extends EmittingTestRunner {
   async #runInBandTest(
     test: Test,
     testConfig: Config.GlobalConfig,
+    abqSocket?: net.Socket,
   ): Promise<TestResult> {
     // `deepCyclicCopy` used here to avoid mem-leak
     const sendMessageToJest: TestFileEvent = (eventName, args) =>
@@ -115,6 +109,7 @@ export default class TestRunner extends EmittingTestRunner {
       test.context.resolver,
       this._context,
       sendMessageToJest,
+      abqSocket,
     ).then(
       result => {
         this.#eventEmitter.emit('test-file-success', [test, result]);
@@ -180,7 +175,7 @@ export default class TestRunner extends EmittingTestRunner {
             // that.
             const estimatedStartTime = Date.now();
 
-            await this.#runInBandTest(test, testConfig).then(
+            await this.#runInBandTest(test, testConfig, socket).then(
               result => {
                 let testResultMessage: Abq.TestResultMessage;
 
@@ -201,23 +196,9 @@ export default class TestRunner extends EmittingTestRunner {
                 }
 
                 if (!resultIsError(result)) {
-                  // The runtime of the whole file, to be used in place of a
-                  // per-test runtime, if it is missing for some reason.
-                  const estimatedRuntime = result.perfStats
-                    ? millisecondToNanosecond(result.perfStats.runtime)
-                    : 0;
-
-                  const testResults = formatAbqFileTestResults(
-                    fileName,
-                    result,
-                    test.context.config,
-                    testConfig,
-                    estimatedRuntime,
-                  );
-
                   testResultMessage = {
-                    test_results: testResults,
-                  };
+                    type: 'incremental_result_done',
+                  } as any;
                 } else {
                   const estimatedRuntime = millisecondToNanosecond(
                     estimatedStartTime - Date.now(),
@@ -232,7 +213,8 @@ export default class TestRunner extends EmittingTestRunner {
                   );
 
                   testResultMessage = {
-                    test_result: {
+                    type: 'incremental_result_done',
+                    last_test_result: {
                       display_name: fileName,
                       id: testCase.id,
                       meta: {},
@@ -246,14 +228,15 @@ export default class TestRunner extends EmittingTestRunner {
                         type: 'error',
                       },
                     },
-                  };
+                  } as any;
                 }
 
                 return Abq.protocolWrite(socket, testResultMessage);
               },
               error => {
                 const testResultMessage: Abq.TestResultMessage = {
-                  test_result: {
+                  type: 'incremental_result_done',
+                  last_test_result: {
                     display_name: fileName,
                     id: testCase.id,
                     meta: {},
@@ -267,7 +250,7 @@ export default class TestRunner extends EmittingTestRunner {
                       type: 'error',
                     },
                   },
-                };
+                } as any;
                 return Abq.protocolWrite(socket, testResultMessage);
               },
             );

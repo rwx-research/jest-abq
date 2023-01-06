@@ -6,6 +6,7 @@
  *
  */
 
+import type * as net from 'net';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -81,6 +82,7 @@ async function runTestInternal(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: net.Socket,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -304,6 +306,7 @@ async function runTestInternal(
         runtime,
         path,
         sendMessageToJest,
+        abqSocket,
       );
     } catch (err: any) {
       // Access stack before uninstalling sourcemaps
@@ -379,6 +382,7 @@ export default async function runTest(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: net.Socket,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
@@ -387,6 +391,7 @@ export default async function runTest(
     resolver,
     context,
     sendMessageToJest,
+    abqSocket,
   );
 
   if (leakDetector) {

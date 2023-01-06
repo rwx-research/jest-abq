@@ -117,13 +117,24 @@ server.on('connection', async socket => {
     await protocolWrite(socket, sendNextTest());
   }
 
+  let currentResultSet = [];
+
   protocolReader(socket, message => {
     const data = JSON.parse(message);
 
     if (data.manifest) {
       process.send(data);
-    } else if (data.test_result || data.test_results) {
-      process.send(data);
+    } else if (data.type === 'incremental_result') {
+      currentResultSet.push(data.test_result);
+    } else if (data.type === 'incremental_result_done') {
+      if (data.test_result) {
+        currentResultSet.push(data.test_result);
+      }
+
+      process.send(currentResultSet);
+      currentResultSet = [];
+
+      console.log('SERVER:', 'flushing results')
       const nextTest = sendNextTest();
 
       if (nextTest) {

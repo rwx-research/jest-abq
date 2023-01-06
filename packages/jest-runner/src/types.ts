@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as net from 'net';
 import type {JestEnvironment} from '@jest/environment';
 import type {
   SerializableError,
@@ -38,6 +39,7 @@ export type TestFramework = (
   runtime: RuntimeType,
   testPath: string,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: net.Socket,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {
