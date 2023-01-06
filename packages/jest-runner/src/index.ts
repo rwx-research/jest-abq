@@ -16,7 +16,6 @@ import type {
   TestEvents,
   TestFileEvent,
   TestResult,
-  TestCaseResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
@@ -443,6 +442,7 @@ function formatAbqStatus(
         type: 'failure',
         backtrace: backtraces,
         exception: exceptions,
+        type: 'failure',
       };
     }
     case 'pending': {
