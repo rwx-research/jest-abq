@@ -125,10 +125,10 @@ server.on('connection', async socket => {
     if (data.manifest) {
       process.send(data);
     } else if (data.type === 'incremental_result') {
-      currentResultSet.push(data.test_result);
+      currentResultSet.push(data.one_test_result);
     } else if (data.type === 'incremental_result_done') {
-      if (data.test_result) {
-        currentResultSet.push(data.test_result);
+      if (data.last_test_result) {
+        currentResultSet.push(data.last_test_result);
       }
 
       process.send(currentResultSet);

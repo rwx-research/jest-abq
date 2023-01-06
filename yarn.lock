@@ -12697,6 +12697,7 @@ __metadata:
     "@jest/source-map": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/types": "workspace:^"
+    "@rwx-research/abq": 0.1.0-alpha.7
     "@types/co": ^4.6.2
     "@types/node": "*"
     chalk: ^4.0.0

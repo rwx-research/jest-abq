@@ -5,13 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as net from 'net';
 import {
   AssertionResult,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {formatResultsErrors} from 'jest-message-util';
+import * as Abq from '@rwx-research/abq';
+import {
+  formatResultsErrors,
+  getStackTraceLines,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
 import type {Reporter, RunDetails} from './types';
@@ -27,11 +33,13 @@ export default class Jasmine2Reporter implements Reporter {
   private readonly _resultsPromise: Promise<TestResult>;
   private readonly _startTimes: Map<string, Microseconds>;
   private readonly _testPath: string;
+  private readonly _abqSocket?: net.Socket;
 
   constructor(
     globalConfig: Config.GlobalConfig,
     config: Config.ProjectConfig,
     testPath: string,
+    abqSocket?: net.Socket,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;
@@ -41,6 +49,7 @@ export default class Jasmine2Reporter implements Reporter {
     this._resolve = null;
     this._resultsPromise = new Promise(resolve => (this._resolve = resolve));
     this._startTimes = new Map();
+    this._abqSocket = abqSocket;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -51,9 +60,20 @@ export default class Jasmine2Reporter implements Reporter {
   }
 
   specDone(result: SpecResult): void {
-    this._testResults.push(
-      this._extractSpecResults(result, this._currentSuites.slice(0)),
+    const assertionResult = this._extractSpecResults(
+      result,
+      this._currentSuites.slice(0),
     );
+    if (this._abqSocket) {
+      sendAbqTest(
+        this._config,
+        this._globalConfig,
+        this._testPath,
+        this._abqSocket,
+        assertionResult,
+      );
+    }
+    this._testResults.push(assertionResult);
   }
 
   suiteStarted(suite: SuiteResult): void {
@@ -165,4 +185,139 @@ export default class Jasmine2Reporter implements Reporter {
 
     return results;
   }
+}
+
+function sendAbqTest(
+  config: Config.ProjectConfig,
+  globalConfig: Config.GlobalConfig,
+  testPath: string,
+  abqSocket: net.Socket,
+  test: AssertionResult,
+) {
+  const result = formatAbqTestResult(config, globalConfig, testPath, test);
+  const msg = {
+    type: 'incremental_result',
+    one_test_result: result,
+  };
+  Abq.protocolWrite(abqSocket, msg as any);
+}
+
+function formatAbqStatus(
+  globalConfig: Config.GlobalConfig,
+  status: AssertionResult['status'],
+  failureMessages: Array<string>,
+): Abq.TestResultStatus {
+  switch (status) {
+    case 'passed': {
+      return {type: 'success'};
+    }
+    case 'failed': {
+      if (failureMessages.length === 0) {
+        return {
+          type: 'failure',
+        };
+      }
+      const backtraces: Array<string> = [];
+      let exceptions = '';
+      for (const errorAndBt of failureMessages) {
+        const {message, stack} = separateMessageFromStack(errorAndBt);
+        const optnewline = exceptions.length === 0 ? '' : '\n';
+        exceptions += `${optnewline}${message}`;
+
+        const stackTraceLines = getStackTraceLines(stack, globalConfig);
+        if (backtraces.length > 0) {
+          backtraces.push('\n');
+        }
+        for (const stackTraceLine of stackTraceLines) {
+          // The formatter might keep around leading whitespace or empty lines;
+          // drop those.
+          const stLine = stackTraceLine.trimLeft();
+          if (stLine.length > 0) {
+            backtraces.push(stLine);
+          }
+        }
+      }
+      return {
+        backtrace: backtraces,
+        exception: exceptions,
+        type: 'failure',
+      };
+    }
+    case 'pending': {
+      return {type: 'pending'};
+    }
+    case 'skipped': {
+      return {type: 'skipped'};
+    }
+    case 'todo': {
+      return {type: 'todo'};
+    }
+    case 'disabled': {
+      return {type: 'skipped'};
+    }
+  }
+}
+
+function millisecondToNanosecond(ms: number): number {
+  return ms * 1000000;
+}
+
+function formatAbqLocation(
+  fileName: string,
+  callsite: AssertionResult['location'],
+): Abq.Location {
+  return {
+    column: callsite?.column,
+    file: fileName,
+    line: callsite?.line,
+  };
+}
+
+function formatAbqTestResult(
+  config: Config.ProjectConfig,
+  globalConfig: Config.GlobalConfig,
+  testPath: string,
+  testResult: AssertionResult,
+): Abq.TestResult {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const {
+    ancestorTitles,
+    duration,
+    failureDetails: _failureDetails,
+    failureMessages,
+    fullName,
+    location: optCallsite,
+    numPassingAsserts: _numPassingAsserts,
+    retryReasons: _retryReasons,
+    status: jestStatus,
+    title: _title,
+  } = testResult;
+  /* eslint-enable @typescript-eslint/no-unused-vars */
+
+  // It appears that jest runners will sometimes report the duration observed
+  // for a failure after the first in a file as zero-timed; in these cases,
+  // use the estimated runtime.
+  const runtime = duration ? millisecondToNanosecond(duration) : 99999999;
+
+  const location = formatAbqLocation(testPath, optCallsite);
+  const status = formatAbqStatus(globalConfig, jestStatus, failureMessages);
+
+  const output = formatResultsErrors(
+    [testResult],
+    // XREF jestAdapterInit's calling of formatResultsErrors
+    config,
+    globalConfig,
+    testPath,
+  );
+
+  return {
+    display_name: fullName,
+    id: fullName,
+    lineage: ancestorTitles,
+    location,
+    meta: {},
+    output,
+    runtime,
+    status,
+  };
 }
