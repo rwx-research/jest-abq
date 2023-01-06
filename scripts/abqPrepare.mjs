@@ -17,6 +17,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 import {
   absolutePackagePath,
+  absoluteProjectPath,
   ensureVersionsCompatible,
   packages,
   version,
@@ -61,3 +62,16 @@ packages.forEach(pkg => {
     throw err;
   }
 });
+
+const rootPackageJsonPath = path.join(absoluteProjectPath(), 'package.json');
+const rootPackageJson = require(rootPackageJsonPath);
+packages.forEach(({upstreamName, path: packagePath}) => {
+  rootPackageJson.resolutions[upstreamName] = `file:./packages/${packagePath}`;
+});
+
+fs.writeFileSync(
+  rootPackageJsonPath,
+  `${JSON.stringify(rootPackageJson, null, 2)}\n`,
+);
+
+console.log('Updated resolutions in package.json');

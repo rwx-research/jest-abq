@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Socket} from 'net';
 import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
@@ -24,6 +23,7 @@ import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import Resolver from 'jest-resolve';
+import {abqSpawnedMessage} from 'jest-runner';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, JestHookEmitter, TestWatcher} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
@@ -210,59 +210,48 @@ export default async function runJest({
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
     /* eslint-disable no-console */
     if (abqConfig.shouldGenerateManifest) {
-      // TODO(dtm): pull from abq package
-      async function connect(abqConfig: any): Promise<Socket> {
-        if (!abqConfig.enabled) {
-          throw new Error('abq must be enabled to connect');
-        }
-
-        const socket = new Socket();
-
-        return await new Promise(resolve => {
-          socket.connect(
-            {
-              host: abqConfig.host,
-              port: abqConfig.port,
-            },
-            () => resolve(socket),
-          );
-        });
-      }
-
-      await connect(abqConfig).then(async socket => {
+      await Abq.connect(abqConfig, abqSpawnedMessage).then(async socket => {
         console.log('TCP connection established with the server.');
-        // Protocol for generating manifest:
-        //
-        // 1. Send protocol version to ABQ_SOCKET, as soon as possible
-        // 2. Send test manifest to ABQ_SOCKET, then exit.
-
-        await Abq.protocolWrite(socket, Abq.spawnedMessage());
 
         let tests: Array<Abq.ManifestMember> = [];
+        let manifest: Abq.ManifestSuccessMessage | Abq.ManifestFailureMessage;
 
-        if (abqConfig.shouldRunIndividualTests) {
-          // See https://github.com/rwx-research/abq-jest/pull/4.
-          throw new Error(
-            'Running individual tests is not yet implemented. Please run the associated file.',
-          );
-        } else {
-          tests = allTests.map(test => {
-            const testPath = normalizeTestPath(test.path);
+        try {
+          if (process.env.ABQ_RUN_INDIVIDUAL_TESTS) {
+            // See https://github.com/rwx-research/abq-jest/pull/4.
+            throw new Error(
+              'Running individual tests is not yet implemented. Please run the associated file.',
+            );
+          } else {
+            tests = allTests.map(test => {
+              const testPath = normalizeTestPath(test.path);
 
-            return {
-              id: testPath,
-              meta: {
-                fileName: testPath,
-              },
-              tags: [],
-              type: 'test',
-            };
-          });
+              return {
+                id: testPath,
+                meta: {
+                  fileName: testPath,
+                },
+                tags: [],
+                type: 'test',
+              };
+            });
+          }
+          const init_meta = {};
+          manifest = {
+            manifest: {init_meta, members: tests},
+            type: 'manifest_success',
+          };
+        } catch (err: any) {
+          manifest = {
+            error: {
+              backtrace: err.stack.split('\n'),
+              exception: err.message,
+              message: err.message,
+            },
+            type: 'manifest_failure',
+          };
         }
-        const init_meta = {};
-        const manifest: Abq.ManifestMessage = {
-          manifest: {init_meta, members: tests},
-        };
+
         await Abq.protocolWrite(socket, manifest);
         socket.destroy();
       });
@@ -340,7 +329,7 @@ export default async function runJest({
     }
   }
 
-  if (abqConfig.shouldHideNativeOutput) {
+  if (process.env.ABQ_HIDE_NATIVE_OUTPUT) {
     globalConfig = {...globalConfig, reporters: []};
   }
 
