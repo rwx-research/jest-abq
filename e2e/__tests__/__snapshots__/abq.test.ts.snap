@@ -64,7 +64,7 @@ Array [
           "    at Runtime._execModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1377:24)",
           "    at Runtime._loadModule (<<REPLACED>>/packages/jest-runtime/build/index.js:989:12)",
           "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:849:12)",
-          "    at jestAdapter (<<REPLACED>>/packages/<<TEST_RUNNER>>)",
+          "<<TEST_RUNNER>>",
           "    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
           "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:281:16)",
           "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:341:7)",

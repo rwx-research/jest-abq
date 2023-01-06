@@ -113,8 +113,8 @@ export function filterTestResultsForSnapshotHelp(testResult: TestResult) {
   if ('backtrace' in result.status && result.status.backtrace) {
     result.status.backtrace = result.status.backtrace.map(l => {
       return replacePath(l)
-        .replace(/jest-circus.*\)/, '<<TEST_RUNNER>>)')
-        .replace(/jest-jasmine2.*\)/, '<<TEST_RUNNER>>)');
+        .replace(/.*jest-circus.*/, '<<TEST_RUNNER>>')
+        .replace(/.*jest-jasmine2.*/, '<<TEST_RUNNER>>');
     });
   }
   return result;
