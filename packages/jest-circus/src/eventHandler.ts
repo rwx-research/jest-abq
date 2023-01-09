@@ -29,7 +29,7 @@ import {
   makeTest,
 } from './utils';
 
-const eventHandler: Circus.EventHandler = (event, state) => {
+const eventHandler: Circus.EventHandler = async (event, state) => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;
@@ -194,14 +194,14 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     case 'test_skip': {
       event.test.status = 'skip';
       if (state.abqSocket) {
-        sendAbqTest(state, event.test);
+        await sendAbqTest(state, event.test);
       }
       break;
     }
     case 'test_todo': {
       event.test.status = 'todo';
       if (state.abqSocket) {
-        sendAbqTest(state, event.test);
+        await sendAbqTest(state, event.test);
       }
       break;
     }
@@ -209,7 +209,7 @@ const eventHandler: Circus.EventHandler = (event, state) => {
       event.test.duration = getTestDuration(event.test);
       event.test.status = 'done';
       if (state.abqSocket) {
-        sendAbqTest(state, event.test);
+        await sendAbqTest(state, event.test);
       }
       state.currentlyRunningTest = null;
       break;
@@ -304,13 +304,13 @@ const eventHandler: Circus.EventHandler = (event, state) => {
   }
 };
 
-function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
+async function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
   const result = formatAbqTestResult(state, test);
   const msg = {
     type: 'incremental_result',
     one_test_result: result,
   };
-  Abq.protocolWrite(state.abqSocket!, msg as any);
+  await Abq.protocolWrite(state.abqSocket!, msg as any);
 }
 
 function formatAbqStatus(

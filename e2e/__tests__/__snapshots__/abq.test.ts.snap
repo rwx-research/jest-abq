@@ -80,7 +80,36 @@ Array [
 
 exports[`ABQ mode handles skipped tests 1`] = `
 Array [
-  Array [],
+  Array [
+    Object {
+      "display_name": "one skipped test",
+      "id": "one skipped test",
+      "lineage": Array [],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "pending",
+      },
+    },
+    Object {
+      "display_name": "other skipped test",
+      "id": "other skipped test",
+      "lineage": Array [],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "pending",
+      },
+    },
+  ],
 ]
 `;
 
@@ -88,37 +117,31 @@ exports[`ABQ mode handles todo tests 1`] = `
 Array [
   Array [
     Object {
-      "display_name": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
-      "id": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
+      "display_name": "one todo test",
+      "id": "one todo test",
+      "lineage": Array [],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
+      },
       "meta": Object {},
-      "output": "  ●  Todo must be called with only a description.
-
-       7 |  */
-       8 |
-    >  9 | test.todo('one todo test', () => {
-         |      ^
-      10 | });
-      11 |
-      12 | test.todo('other todo test', () => {
-
-      at Object.todo (__tests__/todo.test.js:9:6)
-",
+      "output": null,
       "runtime": 12,
       "status": Object {
-        "backtrace": Array [
-          "Error: Todo must be called with only a description.",
-          "    at Object.todo (<<REPLACED>>/e2e/abq/__tests__/todo.test.js:9:6)",
-          "    at Runtime._execModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1377:24)",
-          "    at Runtime._loadModule (<<REPLACED>>/packages/jest-runtime/build/index.js:989:12)",
-          "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:849:12)",
-          "<<TEST_RUNNER>>",
-          "<<NODE INTERNAL>>",
-          "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:287:16)",
-          "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:347:7)",
-          "    at <<REPLACED>>/packages/jest-runner/build/index.js:216:11",
-        ],
-        "exception": "Todo must be called with only a description.",
-        "type": "error",
+        "type": "todo",
+      },
+    },
+    Object {
+      "display_name": "other todo test",
+      "id": "other todo test",
+      "lineage": Array [],
+      "location": Object {
+        "file": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "todo",
       },
     },
   ],
@@ -175,6 +198,14 @@ Array [
           "id": "__tests__/sum.test.js",
           "meta": Object {
             "fileName": "__tests__/sum.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/todo.test.js",
+          "meta": Object {
+            "fileName": "__tests__/todo.test.js",
           },
           "tags": Array [],
           "type": "test",
