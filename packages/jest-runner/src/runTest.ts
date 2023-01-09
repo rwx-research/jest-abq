@@ -110,12 +110,20 @@ async function runTestInternal(
 
   const TestEnvironment: typeof JestEnvironment =
     await transformer.requireAndTranspileModule(testEnvironment);
+
+  const testFrameworkModule =
+    process.env.JEST_JASMINE === '1'
+      ? require.resolve('jest-jasmine2')
+      : projectConfig.testRunner;
+
+  if (abqSocket && !testFrameworkModule.includes('jest-circus/runner')) {
+    throw new Error(`${testFrameworkModule} is not supported as a jest runner when ABQ is enabled.\n\
+                    Use instead "@rwx-research/jest-circus/runner" or \
+                    "jest-circus/runner" with a "@rwx-research/jest-circus/runner" override.`);
+  }
+
   const testFramework: TestFramework =
-    await transformer.requireAndTranspileModule(
-      process.env.JEST_JASMINE === '1'
-        ? require.resolve('jest-jasmine2')
-        : projectConfig.testRunner,
-    );
+    await transformer.requireAndTranspileModule(testFrameworkModule);
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     projectConfig.runtime
       ? require(projectConfig.runtime)

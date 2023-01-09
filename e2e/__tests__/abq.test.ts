@@ -55,13 +55,22 @@ function spawnServer(
   });
 }
 
+function ctest(...args: Parameters<typeof test>) {
+  if (process.env.JEST_JASMINE === '1') {
+    // ABQ does not support jest-jasmine2
+    test.skip(...args);
+    return;
+  }
+  test(...args);
+}
+
 afterEach(async () => {
   if (serverToCleanup) {
     serverToCleanup.kill();
   }
 });
 
-test('ABQ_GENERATE_MANIFEST sends the manifest to the socket', async () => {
+ctest('ABQ_GENERATE_MANIFEST sends the manifest to the socket', async () => {
   expect.assertions(1);
 
   const [socketString, getMessages] = await spawnServer();
@@ -80,7 +89,7 @@ test('ABQ_GENERATE_MANIFEST sends the manifest to the socket', async () => {
   );
 });
 
-test('ABQ_SOCKET runs Jest in ABQ mode', async () => {
+ctest('ABQ_SOCKET runs Jest in ABQ mode', async () => {
   expect.assertions(1);
 
   const [socketString, getMessages] = await spawnServer([
@@ -115,7 +124,7 @@ test('ABQ_SOCKET runs Jest in ABQ mode', async () => {
   );
 });
 
-test('Reports all tests in a file', async () => {
+ctest('Reports all tests in a file', async () => {
   expect.assertions(1);
 
   const [socketString, getMessages] = await spawnServer([
@@ -142,41 +151,44 @@ test('Reports all tests in a file', async () => {
   );
 });
 
-test('ABQ_HIDE_NATIVE_OUTPUT hides all output in the jest process', async () => {
-  expect.assertions(2);
+ctest(
+  'ABQ_HIDE_NATIVE_OUTPUT hides all output in the jest process',
+  async () => {
+    expect.assertions(2);
 
-  const [socketString, getMessages] = await spawnServer([
-    {
-      id: pathForAbqTestFile('sum.test.js'),
-      meta: {
-        fileName: pathForAbqTestFile('sum.test.js'),
+    const [socketString, getMessages] = await spawnServer([
+      {
+        id: pathForAbqTestFile('sum.test.js'),
+        meta: {
+          fileName: pathForAbqTestFile('sum.test.js'),
+        },
+        tags: [],
+        type: 'test',
       },
-      tags: [],
-      type: 'test',
-    },
-    {
-      id: pathForAbqTestFile('failing.test.js'),
-      meta: {
-        fileName: pathForAbqTestFile('failing.test.js'),
+      {
+        id: pathForAbqTestFile('failing.test.js'),
+        meta: {
+          fileName: pathForAbqTestFile('failing.test.js'),
+        },
+        tags: [],
+        type: 'test',
       },
-      tags: [],
-      type: 'test',
-    },
-  ]);
+    ]);
 
-  const {stderr, stdout} = await runAbqJest(
-    {
-      ABQ_HIDE_NATIVE_OUTPUT: '1',
-      ABQ_SOCKET: socketString,
-    },
-    getMessages,
-  );
+    const {stderr, stdout} = await runAbqJest(
+      {
+        ABQ_HIDE_NATIVE_OUTPUT: '1',
+        ABQ_SOCKET: socketString,
+      },
+      getMessages,
+    );
 
-  expect(stderr).toBe('');
-  expect(stdout).toBe('');
-});
+    expect(stderr).toBe('');
+    expect(stdout).toBe('');
+  },
+);
 
-test('ABQ mode handles errors in a test', async () => {
+ctest('ABQ mode handles errors in a test', async () => {
   expect.assertions(1);
 
   const [socketString, getMessages] = await spawnServer([
@@ -203,7 +215,7 @@ test('ABQ mode handles errors in a test', async () => {
   );
 });
 
-test('ABQ mode handles errors outside of test execution', async () => {
+ctest('ABQ mode handles errors outside of test execution', async () => {
   expect.assertions(1);
 
   const [socketString, getMessages] = await spawnServer([
