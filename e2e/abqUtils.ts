@@ -117,7 +117,8 @@ export function filterTestResultsForSnapshotHelp(testResult: TestResult) {
     result.status.backtrace = result.status.backtrace.map(l => {
       return replacePath(l)
         .replace(/.*jest-circus.*/, '<<TEST_RUNNER>>')
-        .replace(/.*jest-jasmine2.*/, '<<TEST_RUNNER>>');
+        .replace(/.*jest-jasmine2.*/, '<<TEST_RUNNER>>')
+        .replace(/.*processTicks.*/, '<<NODE INTERNAL>>');
     });
   }
   return result;
