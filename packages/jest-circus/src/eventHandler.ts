@@ -272,6 +272,9 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
       state.globalConfig = event.globalConfig;
       state.testPath = event.testPath;
       state.abqSocket = event.abqSocket;
+      if (state.abqSocket) {
+        state.includeTestLocationInResult = true;
+      }
       break;
     }
     case 'teardown': {
