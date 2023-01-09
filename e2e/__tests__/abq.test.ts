@@ -241,3 +241,57 @@ ctest('ABQ mode handles errors outside of test execution', async () => {
     },
   );
 });
+
+ctest('ABQ mode handles skipped tests', async () => {
+  expect.assertions(1);
+
+  const [socketString, getMessages] = await spawnServer([
+    {
+      id: pathForAbqTestFile('skip.test.js'),
+      meta: {
+        fileName: pathForAbqTestFile('skip.test.js'),
+      },
+      tags: [],
+      type: 'test',
+    },
+  ]);
+
+  await runAbqJest(
+    {
+      ABQ_SOCKET: socketString,
+    },
+    async () => {
+      const serverMessages = (await getMessages()).map(
+        filterTestResultForSnapshot,
+      );
+      expect(serverMessages).toMatchSnapshot();
+    },
+  );
+});
+
+ctest('ABQ mode handles todo tests', async () => {
+  expect.assertions(1);
+
+  const [socketString, getMessages] = await spawnServer([
+    {
+      id: pathForAbqTestFile('todo.test.js'),
+      meta: {
+        fileName: pathForAbqTestFile('todo.test.js'),
+      },
+      tags: [],
+      type: 'test',
+    },
+  ]);
+
+  await runAbqJest(
+    {
+      ABQ_SOCKET: socketString,
+    },
+    async () => {
+      const serverMessages = (await getMessages()).map(
+        filterTestResultForSnapshot,
+      );
+      expect(serverMessages).toMatchSnapshot();
+    },
+  );
+});

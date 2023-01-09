@@ -193,10 +193,16 @@ const eventHandler: Circus.EventHandler = (event, state) => {
     }
     case 'test_skip': {
       event.test.status = 'skip';
+      if (state.abqSocket) {
+        sendAbqTest(state, event.test);
+      }
       break;
     }
     case 'test_todo': {
       event.test.status = 'todo';
+      if (state.abqSocket) {
+        sendAbqTest(state, event.test);
+      }
       break;
     }
     case 'test_done': {
