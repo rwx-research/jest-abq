@@ -210,6 +210,7 @@ export default async function runJest({
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
     /* eslint-disable no-console */
     if (abqConfig.shouldGenerateManifest) {
+      console.error('generating manifest');
       await Abq.connect(abqConfig, abqSpawnedMessage).then(async socket => {
         console.log('TCP connection established with the server.');
 
