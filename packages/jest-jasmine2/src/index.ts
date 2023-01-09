@@ -6,14 +6,9 @@
  */
 
 import * as path from 'path';
-import type * as net from 'net';
 import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
-import type {
-  AssertionResult,
-  TestFileEvent,
-  TestResult,
-} from '@jest/test-result';
+import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import type {SnapshotState} from 'jest-snapshot';
@@ -36,15 +31,8 @@ export default async function jasmine2(
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-  _sendMessageToJest?: TestFileEvent,
-  abqSocket?: net.Socket,
 ): Promise<TestResult> {
-  const reporter = new JasmineReporter(
-    globalConfig,
-    config,
-    testPath,
-    abqSocket,
-  );
+  const reporter = new JasmineReporter(globalConfig, config, testPath);
   const jasmineFactory =
     runtime.requireInternalModule<typeof import('./jasmine/jasmineLight')>(
       JASMINE,
