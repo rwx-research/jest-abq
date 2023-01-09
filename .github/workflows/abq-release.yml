@@ -40,7 +40,7 @@ jobs:
       - name: Point to @rwx-research versions of patched packages
         run: node scripts/abqPrepare.mjs
       - name: Update lockfile for patched versions
-        run: yarn
+        run: yarn --no-immutable
       - name: Build
         run: yarn build
       - name: Publish @rwx-research/jest-runner
