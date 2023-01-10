@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type * as net from 'net';
 import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
@@ -91,7 +90,7 @@ export default class TestRunner extends EmittingTestRunner {
   async #runInBandTest(
     test: Test,
     testConfig: Config.GlobalConfig,
-    abqSocket?: net.Socket,
+    abqSocket?: Abq.Connection,
   ): Promise<TestResult> {
     // `deepCyclicCopy` used here to avoid mem-leak
     const sendMessageToJest: TestFileEvent = (eventName, args) =>
@@ -198,7 +197,7 @@ export default class TestRunner extends EmittingTestRunner {
                 if (!resultIsError(result)) {
                   testResultMessage = {
                     type: 'incremental_result_done',
-                  } as any;
+                  };
                 } else {
                   const estimatedRuntime = millisecondToNanosecond(
                     estimatedStartTime - Date.now(),
@@ -212,45 +211,49 @@ export default class TestRunner extends EmittingTestRunner {
                     true,
                   );
 
+                  const errorResult: Abq.TestResult = {
+                    display_name: fileName,
+                    id: testCase.id,
+                    meta: {},
+                    output: formattedError,
+                    runtime: estimatedRuntime,
+                    status: {
+                      backtrace: result.stack
+                        ? result.stack.split('\n')
+                        : undefined,
+                      exception: result.message,
+                      type: 'error',
+                    },
+                  };
+
                   testResultMessage = {
                     type: 'incremental_result_done',
-                    last_test_result: {
-                      display_name: fileName,
-                      id: testCase.id,
-                      meta: {},
-                      output: formattedError,
-                      runtime: estimatedRuntime,
-                      status: {
-                        backtrace: result.stack
-                          ? result.stack.split('\n')
-                          : undefined,
-                        exception: result.message,
-                        type: 'error',
-                      },
-                    },
-                  } as any;
+                    last_test_result: errorResult,
+                  };
                 }
 
                 return Abq.protocolWrite(socket, testResultMessage);
               },
               error => {
+                const errorResult: Abq.TestResult = {
+                  display_name: fileName,
+                  id: testCase.id,
+                  meta: {},
+                  output: error.message,
+                  runtime: 0,
+                  status: {
+                    backtrace: error.stack
+                      ? error.stack.split('\n')
+                      : undefined,
+                    exception: error.message,
+                    type: 'error',
+                  },
+                };
+
                 const testResultMessage: Abq.TestResultMessage = {
                   type: 'incremental_result_done',
-                  last_test_result: {
-                    display_name: fileName,
-                    id: testCase.id,
-                    meta: {},
-                    output: error.message,
-                    runtime: 0,
-                    status: {
-                      backtrace: error.stack
-                        ? error.stack.split('\n')
-                        : undefined,
-                      exception: error.message,
-                      type: 'error',
-                    },
-                  },
-                } as any;
+                  last_test_result: errorResult,
+                };
                 return Abq.protocolWrite(socket, testResultMessage);
               },
             );

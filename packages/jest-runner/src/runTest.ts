@@ -6,7 +6,6 @@
  *
  */
 
-import type * as net from 'net';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -22,6 +21,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import type * as Abq from '@rwx-research/abq';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
@@ -82,7 +82,7 @@ async function runTestInternal(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
-  abqSocket?: net.Socket,
+  abqSocket?: Abq.Connection,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -390,7 +390,7 @@ export default async function runTest(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
-  abqSocket?: net.Socket,
+  abqSocket?: Abq.Connection,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,

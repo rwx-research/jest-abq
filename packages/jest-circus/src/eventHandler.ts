@@ -309,11 +309,11 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
 
 async function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
   const result = formatAbqTestResult(state, test);
-  const msg = {
+  const msg: Abq.IncrementalTestResultStep = {
     type: 'incremental_result',
     one_test_result: result,
   };
-  await Abq.protocolWrite(state.abqSocket!, msg as any);
+  await Abq.protocolWrite(state.abqSocket!, msg);
 }
 
 function formatAbqStatus(
