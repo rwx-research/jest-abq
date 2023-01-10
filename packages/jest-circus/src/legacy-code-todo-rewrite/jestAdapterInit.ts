@@ -56,7 +56,7 @@ export const initialize = async ({
   parentProcess: NodeJS.Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
-  abqSocket: net.Socket;
+  abqSocket?: net.Socket;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotState;
@@ -95,14 +95,14 @@ export const initialize = async ({
   }
 
   await dispatch({
+    abqSocket: abqSocket ? abqSocket : null,
+    config,
+    globalConfig,
     name: 'setup',
     parentProcess,
     runtimeGlobals,
     testNamePattern: globalConfig.testNamePattern,
-    config,
-    globalConfig,
     testPath,
-    abqSocket,
   });
 
   if (config.testLocationInResults) {

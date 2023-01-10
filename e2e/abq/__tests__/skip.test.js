@@ -6,8 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-test.skip('one skipped test', () => {
-});
+test.skip('one skipped test', () => {});
 
-test.skip('other skipped test', () => {
-});
+test.skip('other skipped test', () => {});

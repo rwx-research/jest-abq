@@ -227,8 +227,8 @@ export default class TestRunner extends EmittingTestRunner {
                   };
 
                   testResultMessage = {
-                    type: 'incremental_result_done',
                     last_test_result: errorResult,
+                    type: 'incremental_result_done',
                   };
                 }
 
@@ -251,8 +251,8 @@ export default class TestRunner extends EmittingTestRunner {
                 };
 
                 const testResultMessage: Abq.TestResultMessage = {
-                  type: 'incremental_result_done',
                   last_test_result: errorResult,
+                  type: 'incremental_result_done',
                 };
                 return Abq.protocolWrite(socket, testResultMessage);
               },

@@ -80,7 +80,7 @@ export function filterManifestForSnapshot(
   };
 }
 
-export function filterTestResultForSnapshot(testResults: TestResult[]) {
+export function filterTestResultForSnapshot(testResults: Array<TestResult>) {
   return testResults.map(filterTestResultsForSnapshotHelp);
 }
 

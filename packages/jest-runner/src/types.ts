@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Abq from '@rwx-research/abq';
 import type {JestEnvironment} from '@jest/environment';
 import type {
   SerializableError,
@@ -14,7 +15,6 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type * as Abq from '@rwx-research/abq';
 import type RuntimeType from 'jest-runtime';
 import type {TestWatcher} from 'jest-watcher';
 

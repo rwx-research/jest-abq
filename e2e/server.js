@@ -134,7 +134,7 @@ server.on('connection', async socket => {
       process.send(currentResultSet);
       currentResultSet = [];
 
-      console.log('SERVER:', 'flushing results')
+      console.log('SERVER:', 'flushing results');
       const nextTest = sendNextTest();
 
       if (nextTest) {

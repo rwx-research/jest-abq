@@ -6,6 +6,7 @@
  *
  */
 
+import type * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -21,7 +22,6 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
-import type * as Abq from '@rwx-research/abq';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';

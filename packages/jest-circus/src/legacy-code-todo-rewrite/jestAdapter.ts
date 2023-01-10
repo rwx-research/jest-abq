@@ -30,6 +30,7 @@ const jestAdapter = async (
     );
 
   const {globals, snapshotState} = await initialize({
+    abqSocket,
     config,
     environment,
     globalConfig,
@@ -38,7 +39,6 @@ const jestAdapter = async (
     sendMessageToJest,
     setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
-    abqSocket,
   });
 
   if (config.fakeTimers.enableGlobally) {

@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as Abq from '@rwx-research/abq';
 import type {Status} from '@jest/test-result';
 import type {Circus, TestResult} from '@jest/types';
-import * as Abq from '@rwx-research/abq';
 import {
   formatResultsErrors,
   getStackTraceLines,
@@ -310,8 +310,8 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
 async function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
   const result = formatAbqTestResult(state, test);
   const msg: Abq.IncrementalTestResultStep = {
-    type: 'incremental_result',
     one_test_result: result,
+    type: 'incremental_result',
   };
   await Abq.protocolWrite(state.abqSocket!, msg);
 }
