@@ -12385,6 +12385,7 @@ __metadata:
     "@jest/expect": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/types": "workspace:^"
+    "@rwx-research/abq": 0.1.0-alpha.7
     "@types/co": ^4.6.2
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
