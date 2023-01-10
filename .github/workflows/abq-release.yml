@@ -37,12 +37,10 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Point to @rwx-research versions of patched packages
-        run: node scripts/abqPrepare.mjs
-      - name: Update lockfile for patched versions
-        run: yarn --no-immutable
       - name: Build
         run: yarn build
+      - name: Point to @rwx-research versions of patched packages
+        run: node scripts/abqPrepare.mjs
       - name: Publish @rwx-research/jest-runner
         working-directory: packages/jest-runner
         run: yarn npm publish

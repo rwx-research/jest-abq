@@ -173,12 +173,15 @@
     "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
   },
   "resolutions": {
+    "@jest/core": "workspace:^",
     "@types/node": "~14.14.45",
     "ansi-escapes/type-fest": "^2.0.0",
     "babel-jest": "workspace:^",
     "enzyme/cheerio": "=1.0.0-rc.3",
     "jest": "workspace:^",
-    "jest-environment-node": "workspace:^"
+    "jest-config": "workspace:^",
+    "jest-environment-node": "workspace:^",
+    "jest-runner": "workspace:^"
   },
   "packageManager": "yarn@3.2.4"
 }
