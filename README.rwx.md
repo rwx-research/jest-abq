@@ -13,9 +13,10 @@ Commit the version change.
 Get a fresh checkout. Then, in order:
 
 ```
-node scripts/abqPrepare.mjs   # set rwx-exposed versions of abq-patched jest packages
-yarn         # update the lockfile to point to rwx-exposed versions
-yarn build   # set rwx-exposed versions of abq-patched jest packages
+yarn
+yarn build
+node scripts/abqPrepare.mjs
+yarn
 
 # For each rwx-published package, IN ORDER:
 #  packages/jest-runner
