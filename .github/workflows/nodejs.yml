@@ -107,21 +107,26 @@ jobs:
         run: yarn dedupe --check
 
   yarn-build:
-    name: Build
+    name: Build Jest for ABQ
     runs-on: ubuntu-latest
     needs: prepare-yarn-cache-ubuntu
     steps:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v3
+      - name: Set up node.js
+        uses: actions/setup-node@v3
         with:
           node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          scope: '@rwx-research'
           cache: yarn
-      - name: install
+      - name: Install dependencies
         run: yarn --immutable
-      - name: Build with yarn
+      - name: Build
         run: yarn build
+      - name: Point to @rwx-research versions of patched packages
+        run: node scripts/abqPrepare.mjs
 
   test-ubuntu:
     uses: ./.github/workflows/test.yml
