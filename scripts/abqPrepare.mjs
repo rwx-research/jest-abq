@@ -18,7 +18,6 @@ import * as path from 'path';
 import chalk from 'chalk';
 import {
   absolutePackagePath,
-  absoluteProjectPath,
   ensureVersionsCompatible,
   packages,
   version,
@@ -39,19 +38,6 @@ packages.forEach(pkg => {
     packageJson.name = pkg.rwxName;
     packageJson.version = version;
 
-    // Translate dependencies like
-    //   "jest-config": "workspace:^"
-    // to
-    //   "jest-config": "npm:@rwx-research/jest-config@<version>"
-    packages.forEach(({upstreamName, rwxName}) => {
-      if (upstreamName in packageJson.dependencies) {
-        console.assert(
-          packageJson.dependencies[upstreamName].startsWith('workspace'),
-        );
-        packageJson.dependencies[upstreamName] = `npm:${rwxName}@${version}`;
-      }
-    });
-
     fs.writeFileSync(
       packageJsonPath,
       `${JSON.stringify(packageJson, null, 2)}\n`,
@@ -63,16 +49,3 @@ packages.forEach(pkg => {
     throw err;
   }
 });
-
-const rootPackageJsonPath = path.join(absoluteProjectPath(), 'package.json');
-const rootPackageJson = require(rootPackageJsonPath);
-packages.forEach(({upstreamName, path: packagePath}) => {
-  rootPackageJson.resolutions[upstreamName] = `file:./packages/${packagePath}`;
-});
-
-fs.writeFileSync(
-  rootPackageJsonPath,
-  `${JSON.stringify(rootPackageJson, null, 2)}\n`,
-);
-
-console.log('Updated resolutions in package.json');
