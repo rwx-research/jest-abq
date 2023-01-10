@@ -106,7 +106,7 @@ Array [
       "location": Object {
         "column": 6,
         "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
-        "line": 12,
+        "line": 11,
       },
       "meta": Object {},
       "output": null,
