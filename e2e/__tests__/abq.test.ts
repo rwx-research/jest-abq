@@ -16,7 +16,7 @@ import {
 } from '../abqUtils';
 
 // set this to true to see the server output with your jest results
-const DEBUG_SERVER = false;
+const DEBUG_SERVER = true;
 
 let serverToCleanup: ChildProcess;
 
