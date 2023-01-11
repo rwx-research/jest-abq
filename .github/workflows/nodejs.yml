@@ -127,6 +127,8 @@ jobs:
         run: yarn build
       - name: Point to @rwx-research versions of patched packages
         run: node scripts/abqPrepare.mjs
+      - name: Update local dependencies for ABQ
+        run: yarn --no-immutable
 
   test-ubuntu:
     uses: ./.github/workflows/test.yml
