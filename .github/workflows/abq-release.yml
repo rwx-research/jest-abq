@@ -38,7 +38,6 @@ jobs:
           always-auth: true
       - name: Setup .yarnrc.yml
         run: |
-          yarn config set npmScopes.rwx-research.npmRegistryServer "https://registry.yarnpkg.com"
           yarn config set npmScopes.rwx-research.npmAlwaysAuth true
           yarn config set npmScopes.rwx-research.npmAuthToken "${NODE_AUTH_TOKEN}"
         env:
