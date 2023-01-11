@@ -6,7 +6,11 @@
  */
 
 const Net = require('net');
-const { protocolRead, protocolWrite, protocolReader } = require('@rwx-research/abq');
+const {
+  protocolRead,
+  protocolWrite,
+  protocolReader,
+} = require('@rwx-research/abq');
 
 const manifest = process.argv.slice(2).map(arg => JSON.parse(arg));
 const server = new Net.Server();
