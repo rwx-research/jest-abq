@@ -116,7 +116,10 @@ async function runTestInternal(
       ? require.resolve('jest-jasmine2')
       : projectConfig.testRunner;
 
-  if (abqSocket && !testFrameworkModule.includes('jest-circus/runner')) {
+  if (
+    abqSocket &&
+    testFrameworkModule !== require.resolve('jest-circus/runner')
+  ) {
     throw new Error(`${testFrameworkModule} is not supported as a jest runner when ABQ is enabled.\n\
                     Use instead "@rwx-research/jest-circus/runner" or \
                     "jest-circus/runner" with a "@rwx-research/jest-circus/runner" override.`);
