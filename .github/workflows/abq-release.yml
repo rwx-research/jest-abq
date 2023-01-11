@@ -35,6 +35,14 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: '@rwx-research'
           cache: yarn
+          always-auth: true
+      - name: Setup .yarnrc.yml
+        run: |
+          yarn config set npmScopes.rwx-research.npmRegistryServer "https://registry.yarnpkg.com"
+          yarn config set npmScopes.rwx-research.npmAlwaysAuth true
+          yarn config set npmScopes.rwx-research.npmAuthToken "${NODE_AUTH_TOKEN}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Install dependencies
         run: yarn --immutable
       - name: Build
