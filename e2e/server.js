@@ -25,13 +25,13 @@ function protocolRead(stream) {
 
 function protocolReader(stream, handler) {
   let buffer = Buffer.from('');
-  let messageSize;
+  let messageSize = null;
 
-  stream.on('data', chunk => {
-    console.log('SERVER:', `Received chunk: ${chunk.toString()}`);
-
-    buffer = Buffer.concat([buffer, chunk], buffer.length + chunk.length);
-    if (buffer.length >= 4) {
+  function tryProcessBufferMessage(newChunk) {
+    if (newChunk !== null) {
+      buffer = Buffer.concat([buffer, newChunk], buffer.length + newChunk.length);
+    }
+    if (messageSize === null && buffer.length >= 4) {
       messageSize = buffer.readUInt32BE(0);
     }
     if (messageSize && buffer.length >= messageSize + 4) {
@@ -44,11 +44,23 @@ function protocolReader(stream, handler) {
       // processed.
       const newBuffer = buffer.slice(4 + messageSize);
       buffer = newBuffer;
+      messageSize = null;
 
       handler(currentMessage);
+
+      if (buffer.length > 0) {
+        // There is more in the buffer waiting behind the message we just
+        // parsed; in fact, it may be a whole message waiting to be processed.
+        tryProcessBufferMessage();
+      }
     } else {
       console.log('SERVER:', 'Incomplete chunk, waiting for next chunk');
     }
+  }
+
+  stream.on('data', chunk => {
+    console.log('SERVER:', `Received chunk: ${chunk.toString()}`);
+    tryProcessBufferMessage(chunk);
   });
 }
 
