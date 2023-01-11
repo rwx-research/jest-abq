@@ -252,6 +252,7 @@ Array [
          |                ^
       11 | });
       12 |
+      13 | test('this test is also failing', () => {
 
       at Object.toBe (__tests__/failing.test.js:10:16)
 ",
@@ -259,6 +260,44 @@ Array [
       "status": Object {
         "backtrace": Array [
           "at Object.toBe (<<REPLACED>>/e2e/abq/__tests__/failing.test.js:10:16)",
+        ],
+        "exception": "expect(received).toBe(expected) // Object.is equality
+
+Expected: false
+Received: true",
+        "type": "failure",
+      },
+    },
+    Object {
+      "display_name": "this test is also failing",
+      "id": "this test is also failing",
+      "lineage": Array [],
+      "location": Object {
+        "column": 1,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/failing.test.js",
+        "line": 13,
+      },
+      "meta": Object {},
+      "output": "  ● this test is also failing
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      12 |
+      13 | test('this test is also failing', () => {
+    > 14 |   expect(true).toBe(false);
+         |                ^
+      15 | });
+      16 |
+
+      at Object.toBe (__tests__/failing.test.js:14:16)
+",
+      "runtime": 12,
+      "status": Object {
+        "backtrace": Array [
+          "at Object.toBe (<<REPLACED>>/e2e/abq/__tests__/failing.test.js:14:16)",
         ],
         "exception": "expect(received).toBe(expected) // Object.is equality
 

@@ -200,7 +200,7 @@ export default class TestRunner extends EmittingTestRunner {
                   };
                 } else {
                   const estimatedRuntime = millisecondToNanosecond(
-                    estimatedStartTime - Date.now(),
+                    Date.now() - estimatedStartTime,
                   );
 
                   const formattedError = formatExecError(

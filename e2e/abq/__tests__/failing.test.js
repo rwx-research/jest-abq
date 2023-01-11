@@ -9,3 +9,7 @@
 test('this test is failing', () => {
   expect(true).toBe(false);
 });
+
+test('this test is also failing', () => {
+  expect(true).toBe(false);
+});

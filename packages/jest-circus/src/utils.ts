@@ -72,6 +72,7 @@ export const makeTest = (
   asyncError,
   concurrent,
   duration: null,
+  durationNanos: null,
   errors: [],
   failing,
   fn,
@@ -82,6 +83,7 @@ export const makeTest = (
   retryReasons: [],
   seenDone: false,
   startedAt: null,
+  startedAtNanos: null,
   status: null,
   timeout,
 });
@@ -310,6 +312,16 @@ export const callAsyncCircusFn = (
 export const getTestDuration = (test: Circus.TestEntry): number | null => {
   const {startedAt} = test;
   return typeof startedAt === 'number' ? Date.now() - startedAt : null;
+};
+
+export const nanosNow = (): number => {
+  const [seconds, nanos] = process.hrtime();
+  return seconds * 1_000_000_000 + nanos;
+};
+
+export const getNanosDuration = (test: Circus.TestEntry): number => {
+  const {startedAtNanos} = test;
+  return nanosNow() - startedAtNanos!;
 };
 
 export const makeRunResult = (
