@@ -51,7 +51,7 @@ function protocolReader(stream, handler) {
       if (buffer.length > 0) {
         // There is more in the buffer waiting behind the message we just
         // parsed; in fact, it may be a whole message waiting to be processed.
-        tryProcessBufferMessage();
+        tryProcessBufferMessage(null);
       }
     } else {
       console.log('SERVER:', 'Incomplete chunk, waiting for next chunk');
