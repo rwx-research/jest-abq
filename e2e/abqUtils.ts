@@ -11,7 +11,6 @@ import type {
   ManifestMember,
   ManifestSuccessMessage,
   TestResult,
-  TestResultMessage,
 } from '@rwx-research/abq';
 import runJest from './runJest';
 
@@ -81,25 +80,8 @@ export function filterManifestForSnapshot(
   };
 }
 
-export function filterTestResultForSnapshot(
-  testResultMessage: TestResultMessage,
-) {
-  let results;
-  if ('test_result' in testResultMessage && testResultMessage.test_result) {
-    results = [testResultMessage.test_result];
-  } else if (
-    'test_results' in testResultMessage &&
-    testResultMessage.test_results
-  ) {
-    results = testResultMessage.test_results;
-  } else {
-    throw new Error(
-      `Unknown testResultMessage type: needs test_result or test_results, got ${Object.keys(
-        testResultMessage,
-      ).join(', ')}`,
-    );
-  }
-  return results.map(filterTestResultsForSnapshotHelp);
+export function filterTestResultForSnapshot(testResults: Array<TestResult>) {
+  return testResults.map(filterTestResultsForSnapshotHelp);
 }
 
 export function filterTestResultsForSnapshotHelp(testResult: TestResult) {

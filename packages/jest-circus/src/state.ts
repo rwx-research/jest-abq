@@ -21,9 +21,12 @@ export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 const createState = (): Circus.State => {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   return {
+    abqSocket: null,
+    config: null,
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
     currentlyRunningTest: null,
     expand: undefined,
+    globalConfig: null,
     hasFocusedTests: false,
     hasStarted: false,
     includeTestLocationInResult: false,
@@ -31,6 +34,7 @@ const createState = (): Circus.State => {
     parentProcess: null,
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
     testNamePattern: null,
+    testPath: null,
     testTimeout: 5000,
     unhandledErrors: [],
   };

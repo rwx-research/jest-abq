@@ -12,20 +12,12 @@ import Emittery = require('emittery');
 import pLimit = require('p-limit');
 import type {
   Test,
-  TestCaseResult,
   TestEvents,
   TestFileEvent,
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {
-  StackTraceConfig,
-  StackTraceOptions,
-  formatExecError,
-  formatResultsErrors,
-  getStackTraceLines,
-  separateMessageFromStack,
-} from 'jest-message-util';
+import {formatExecError} from 'jest-message-util';
 import {deepCyclicCopy} from 'jest-util';
 import type {TestWatcher} from 'jest-watcher';
 import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
@@ -98,6 +90,7 @@ export default class TestRunner extends EmittingTestRunner {
   async #runInBandTest(
     test: Test,
     testConfig: Config.GlobalConfig,
+    abqSocket?: Abq.Connection,
   ): Promise<TestResult> {
     // `deepCyclicCopy` used here to avoid mem-leak
     const sendMessageToJest: TestFileEvent = (eventName, args) =>
@@ -115,6 +108,7 @@ export default class TestRunner extends EmittingTestRunner {
       test.context.resolver,
       this._context,
       sendMessageToJest,
+      abqSocket,
     ).then(
       result => {
         this.#eventEmitter.emit('test-file-success', [test, result]);
@@ -180,7 +174,7 @@ export default class TestRunner extends EmittingTestRunner {
             // that.
             const estimatedStartTime = Date.now();
 
-            await this.#runInBandTest(test, testConfig).then(
+            await this.#runInBandTest(test, testConfig, socket).then(
               result => {
                 let testResultMessage: Abq.TestResultMessage;
 
@@ -201,22 +195,8 @@ export default class TestRunner extends EmittingTestRunner {
                 }
 
                 if (!resultIsError(result)) {
-                  // The runtime of the whole file, to be used in place of a
-                  // per-test runtime, if it is missing for some reason.
-                  const estimatedRuntime = result.perfStats
-                    ? millisecondToNanosecond(result.perfStats.runtime)
-                    : 0;
-
-                  const testResults = formatAbqFileTestResults(
-                    fileName,
-                    result,
-                    test.context.config,
-                    testConfig,
-                    estimatedRuntime,
-                  );
-
                   testResultMessage = {
-                    test_results: testResults,
+                    type: 'incremental_result_done',
                   };
                 } else {
                   const estimatedRuntime = millisecondToNanosecond(
@@ -231,42 +211,48 @@ export default class TestRunner extends EmittingTestRunner {
                     true,
                   );
 
-                  testResultMessage = {
-                    test_result: {
-                      display_name: fileName,
-                      id: testCase.id,
-                      meta: {},
-                      output: formattedError,
-                      runtime: estimatedRuntime,
-                      status: {
-                        backtrace: result.stack
-                          ? result.stack.split('\n')
-                          : undefined,
-                        exception: result.message,
-                        type: 'error',
-                      },
+                  const errorResult: Abq.TestResult = {
+                    display_name: fileName,
+                    id: testCase.id,
+                    meta: {},
+                    output: formattedError,
+                    runtime: estimatedRuntime,
+                    status: {
+                      backtrace: result.stack
+                        ? result.stack.split('\n')
+                        : undefined,
+                      exception: result.message,
+                      type: 'error',
                     },
+                  };
+
+                  testResultMessage = {
+                    last_test_result: errorResult,
+                    type: 'incremental_result_done',
                   };
                 }
 
                 return Abq.protocolWrite(socket, testResultMessage);
               },
               error => {
-                const testResultMessage: Abq.TestResultMessage = {
-                  test_result: {
-                    display_name: fileName,
-                    id: testCase.id,
-                    meta: {},
-                    output: error.message,
-                    runtime: 0,
-                    status: {
-                      backtrace: error.stack
-                        ? error.stack.split('\n')
-                        : undefined,
-                      exception: error.message,
-                      type: 'error',
-                    },
+                const errorResult: Abq.TestResult = {
+                  display_name: fileName,
+                  id: testCase.id,
+                  meta: {},
+                  output: error.message,
+                  runtime: 0,
+                  status: {
+                    backtrace: error.stack
+                      ? error.stack.split('\n')
+                      : undefined,
+                    exception: error.message,
+                    type: 'error',
                   },
+                };
+
+                const testResultMessage: Abq.TestResultMessage = {
+                  last_test_result: errorResult,
+                  type: 'incremental_result_done',
                 };
                 return Abq.protocolWrite(socket, testResultMessage);
               },
@@ -388,130 +374,6 @@ export default class TestRunner extends EmittingTestRunner {
 
 function millisecondToNanosecond(ms: number): number {
   return ms * 1000000;
-}
-
-function formatAbqLocation(
-  fileName: string,
-  callsite: TestCaseResult['location'],
-): Abq.Location {
-  return {
-    column: callsite?.column,
-    file: fileName,
-    line: callsite?.line,
-  };
-}
-
-function formatAbqStatus(
-  status: TestCaseResult['status'],
-  failureMessages: Array<string>,
-  options: StackTraceOptions,
-): Abq.TestResultStatus {
-  switch (status) {
-    case 'passed': {
-      return {type: 'success'};
-    }
-    case 'failed': {
-      if (failureMessages.length === 0) {
-        return {
-          type: 'failure',
-        };
-      }
-      const backtraces: Array<string> = [];
-      let exceptions = '';
-      for (const errorAndBt of failureMessages) {
-        const {message, stack} = separateMessageFromStack(errorAndBt);
-        const optnewline = exceptions.length === 0 ? '' : '\n';
-        exceptions += `${optnewline}${message}`;
-
-        const stackTraceLines = getStackTraceLines(stack, options);
-        if (backtraces.length > 0) {
-          backtraces.push('\n');
-        }
-        for (const stackTraceLine of stackTraceLines) {
-          // The formatter might keep around leading whitespace or empty lines;
-          // drop those.
-          const stLine = stackTraceLine.trimLeft();
-          if (stLine.length > 0) {
-            backtraces.push(stLine);
-          }
-        }
-      }
-      return {
-        backtrace: backtraces,
-        exception: exceptions,
-        type: 'failure',
-      };
-    }
-    case 'pending': {
-      return {type: 'pending'};
-    }
-    case 'skipped': {
-      return {type: 'skipped'};
-    }
-    case 'todo': {
-      return {type: 'todo'};
-    }
-    case 'disabled': {
-      return {type: 'skipped'};
-    }
-  }
-}
-
-function formatAbqFileTestResults(
-  fileName: string,
-  jestTestFileResult: TestResult,
-  config: StackTraceConfig,
-  options: StackTraceOptions,
-  estimatedRuntime: Abq.Nanoseconds,
-): Array<Abq.TestResult> {
-  const results: Array<Abq.TestResult> = [];
-  for (const jestResult of jestTestFileResult.testResults) {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const {
-      ancestorTitles,
-      duration,
-      failureDetails: _failureDetails,
-      failureMessages,
-      fullName,
-      location: optCallsite,
-      numPassingAsserts: _numPassingAsserts,
-      retryReasons: _retryReasons,
-      status: jestStatus,
-      title: _title,
-    } = jestResult;
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-
-    // It appears that jest runners will sometimes report the duration observed
-    // for a failure after the first in a file as zero-timed; in these cases,
-    // use the estimated runtime.
-    const runtime = duration
-      ? millisecondToNanosecond(duration)
-      : estimatedRuntime;
-
-    const location = formatAbqLocation(fileName, optCallsite);
-    const status = formatAbqStatus(jestStatus, failureMessages, options);
-
-    const output = formatResultsErrors(
-      [jestResult],
-      // XREF jest-jasmine2's calling of formatResultsErrors
-      config,
-      options,
-      jestTestFileResult.testFilePath,
-    );
-
-    const result: Abq.TestResult = {
-      display_name: fullName,
-      id: fullName,
-      lineage: ancestorTitles,
-      location,
-      meta: {},
-      output,
-      runtime,
-      status,
-    };
-    results.push(result);
-  }
-  return results;
 }
 
 class CancelRun extends Error {

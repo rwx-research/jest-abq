@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as Abq from '@rwx-research/abq';
 import type {JestEnvironment} from '@jest/environment';
 import type {
   SerializableError,
@@ -38,6 +39,7 @@ export type TestFramework = (
   runtime: RuntimeType,
   testPath: string,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: Abq.Connection,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {

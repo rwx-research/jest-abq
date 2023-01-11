@@ -85,6 +85,9 @@ function spawnJest(
   }
   const env: NodeJS.ProcessEnv = {
     ...process.env,
+    // ABQ should be unset in integration tests, unless we are explicitly
+    // testing ABQ integrations!
+    ABQ_SOCKET: undefined,
     FORCE_COLOR: '0',
     ...options.env,
   };

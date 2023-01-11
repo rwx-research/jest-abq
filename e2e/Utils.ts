@@ -22,7 +22,14 @@ export const run = (
   env?: Record<string, string>,
 ): RunResult => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
+  const cleanEnv = {
+    ...process.env,
+    // ABQ should be unset in integration tests, unless we are explicitly
+    // testing ABQ integrations!
+    ABQ_SOCKET: undefined,
+    ...env,
+  };
+  const spawnOptions = {cwd, env: cleanEnv, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as net from 'net';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
@@ -21,6 +22,7 @@ const jestAdapter = async (
   runtime: Runtime,
   testPath: string,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: net.Socket,
 ): Promise<TestResult> => {
   const {initialize, runAndTransformResultsToJestFormat} =
     runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
@@ -28,6 +30,7 @@ const jestAdapter = async (
     );
 
   const {globals, snapshotState} = await initialize({
+    abqSocket,
     config,
     environment,
     globalConfig,

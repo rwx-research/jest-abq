@@ -8,7 +8,9 @@ Array [
       "id": "this test is erroring",
       "lineage": Array [],
       "location": Object {
+        "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/errors.test.js",
+        "line": 9,
       },
       "meta": Object {},
       "output": "  ● this test is erroring
@@ -66,12 +68,90 @@ Array [
           "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:849:12)",
           "<<TEST_RUNNER>>",
           "<<NODE INTERNAL>>",
-          "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:281:16)",
-          "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:341:7)",
+          "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:287:16)",
+          "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:347:7)",
           "    at <<REPLACED>>/packages/jest-runner/build/index.js:216:11",
         ],
         "exception": "can't catch me",
         "type": "error",
+      },
+    },
+  ],
+]
+`;
+
+exports[`ABQ mode handles skipped tests 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "one skipped test",
+      "id": "one skipped test",
+      "lineage": Array [],
+      "location": Object {
+        "column": 6,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
+        "line": 9,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "pending",
+      },
+    },
+    Object {
+      "display_name": "other skipped test",
+      "id": "other skipped test",
+      "lineage": Array [],
+      "location": Object {
+        "column": 6,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "pending",
+      },
+    },
+  ],
+]
+`;
+
+exports[`ABQ mode handles todo tests 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "one todo test",
+      "id": "one todo test",
+      "lineage": Array [],
+      "location": Object {
+        "column": 6,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
+        "line": 9,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "todo",
+      },
+    },
+    Object {
+      "display_name": "other todo test",
+      "id": "other todo test",
+      "lineage": Array [],
+      "location": Object {
+        "column": 6,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "todo",
       },
     },
   ],
@@ -117,9 +197,25 @@ Array [
           "type": "test",
         },
         Object {
+          "id": "__tests__/skip.test.js",
+          "meta": Object {
+            "fileName": "__tests__/skip.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
           "id": "__tests__/sum.test.js",
           "meta": Object {
             "fileName": "__tests__/sum.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/todo.test.js",
+          "meta": Object {
+            "fileName": "__tests__/todo.test.js",
           },
           "tags": Array [],
           "type": "test",
@@ -138,7 +234,9 @@ Array [
       "id": "this test is failing",
       "lineage": Array [],
       "location": Object {
+        "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/failing.test.js",
+        "line": 9,
       },
       "meta": Object {},
       "output": "  ● this test is failing
@@ -178,7 +276,9 @@ Received: true",
         "the + operator",
       ],
       "location": Object {
+        "column": 3,
         "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+        "line": 10,
       },
       "meta": Object {},
       "output": null,
@@ -194,7 +294,9 @@ Received: true",
         "the + operator",
       ],
       "location": Object {
+        "column": 3,
         "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+        "line": 14,
       },
       "meta": Object {},
       "output": null,
@@ -211,7 +313,9 @@ Received: true",
         "with three operands",
       ],
       "location": Object {
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+        "line": 19,
       },
       "meta": Object {},
       "output": null,
@@ -234,7 +338,9 @@ Array [
         "the + operator",
       ],
       "location": Object {
+        "column": 3,
         "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+        "line": 10,
       },
       "meta": Object {},
       "output": null,
@@ -250,7 +356,9 @@ Array [
         "the + operator",
       ],
       "location": Object {
+        "column": 3,
         "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+        "line": 14,
       },
       "meta": Object {},
       "output": null,
@@ -267,7 +375,9 @@ Array [
         "with three operands",
       ],
       "location": Object {
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/sum.test.js",
+        "line": 19,
       },
       "meta": Object {},
       "output": null,

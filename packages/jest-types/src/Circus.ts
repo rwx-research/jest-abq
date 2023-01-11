@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type * as net from 'net';
+import type * as Config from './Config';
 import type * as Global from './Global';
 
 type Process = NodeJS.Process;
@@ -90,6 +92,10 @@ export type AsyncEvent =
       testNamePattern?: string;
       runtimeGlobals: JestGlobals;
       parentProcess: Process;
+      abqSocket: net.Socket | null;
+      config: Config.ProjectConfig;
+      globalConfig: Config.GlobalConfig;
+      testPath: string;
     }
   | {
       name: 'include_test_location_in_result';
@@ -220,6 +226,10 @@ export type State = {
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
+  abqSocket: net.Socket | null;
+  config: Config.ProjectConfig | null;
+  globalConfig: Config.GlobalConfig | null;
+  testPath: string | null;
 };
 
 export type DescribeBlock = {

@@ -32,7 +32,7 @@
     "@babel/core": "^7.11.6",
     "@jest/test-sequencer": "workspace:^",
     "@jest/types": "workspace:^",
-    "@rwx-research/abq": "0.1.0-alpha.7",
+    "@rwx-research/abq": "0.1.0-alpha.11",
     "babel-jest": "workspace:^",
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",

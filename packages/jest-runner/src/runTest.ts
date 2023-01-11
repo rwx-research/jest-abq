@@ -6,6 +6,7 @@
  *
  */
 
+import type * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -81,6 +82,7 @@ async function runTestInternal(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: Abq.Connection,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -108,12 +110,23 @@ async function runTestInternal(
 
   const TestEnvironment: typeof JestEnvironment =
     await transformer.requireAndTranspileModule(testEnvironment);
+
+  const testFrameworkModule =
+    process.env.JEST_JASMINE === '1'
+      ? require.resolve('jest-jasmine2')
+      : projectConfig.testRunner;
+
+  if (
+    abqSocket &&
+    testFrameworkModule !== require.resolve('jest-circus/runner')
+  ) {
+    throw new Error(`${testFrameworkModule} is not supported as a jest runner when ABQ is enabled.\n\
+                    Use instead "@rwx-research/jest-circus/runner" or \
+                    "jest-circus/runner" with a "@rwx-research/jest-circus/runner" override.`);
+  }
+
   const testFramework: TestFramework =
-    await transformer.requireAndTranspileModule(
-      process.env.JEST_JASMINE === '1'
-        ? require.resolve('jest-jasmine2')
-        : projectConfig.testRunner,
-    );
+    await transformer.requireAndTranspileModule(testFrameworkModule);
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     projectConfig.runtime
       ? require(projectConfig.runtime)
@@ -304,6 +317,7 @@ async function runTestInternal(
         runtime,
         path,
         sendMessageToJest,
+        abqSocket,
       );
     } catch (err: any) {
       // Access stack before uninstalling sourcemaps
@@ -379,6 +393,7 @@ export default async function runTest(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
+  abqSocket?: Abq.Connection,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
@@ -387,6 +402,7 @@ export default async function runTest(
     resolver,
     context,
     sendMessageToJest,
+    abqSocket,
   );
 
   if (leakDetector) {

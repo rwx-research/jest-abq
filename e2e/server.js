@@ -6,67 +6,11 @@
  */
 
 const Net = require('net');
-
-function protocolRead(stream) {
-  return new Promise((resolve, reject) => {
-    const resolver = function () {
-      const buf = stream.read(4);
-      console.log('SERVER', buf);
-      const messageSize = buf.readUInt32BE(0);
-      const msg = stream.read(messageSize);
-
-      stream.removeListener('readable', resolver);
-
-      resolve(msg.toString('utf8'));
-    };
-    stream.on('readable', resolver);
-  });
-}
-
-function protocolReader(stream, handler) {
-  let buffer = Buffer.from('');
-  let messageSize;
-
-  stream.on('data', chunk => {
-    console.log('SERVER:', `Received chunk: ${chunk.toString()}`);
-
-    buffer = Buffer.concat([buffer, chunk], buffer.length + chunk.length);
-    if (buffer.length >= 4) {
-      messageSize = buffer.readUInt32BE(0);
-    }
-    if (messageSize && buffer.length >= messageSize + 4) {
-      // We now know the whole message is available; get it.
-      const currentMessage = buffer.toString('utf8', 4, 4 + messageSize);
-
-      // There might be an additional message waiting for us behind the one we
-      // just parsed. Reset the buffer to this new message before we handle the
-      // current message, so that incoming messages can continue to be
-      // processed.
-      const newBuffer = buffer.slice(4 + messageSize);
-      buffer = newBuffer;
-
-      handler(currentMessage);
-    } else {
-      console.log('SERVER:', 'Incomplete chunk, waiting for next chunk');
-    }
-  });
-}
-
-async function protocolWrite(stream, data) {
-  const buffer = Buffer.from(JSON.stringify(data), 'utf8');
-  const protocolBuffer = Buffer.alloc(4 + buffer.length);
-  protocolBuffer.writeUInt32BE(buffer.length, 0);
-  buffer.copy(protocolBuffer, 4);
-  return new Promise((resolve, reject) => {
-    stream.write(protocolBuffer, err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(undefined);
-      }
-    });
-  });
-}
+const {
+  protocolRead,
+  protocolWrite,
+  protocolReader,
+} = require('@rwx-research/abq');
 
 const manifest = process.argv.slice(2).map(arg => JSON.parse(arg));
 const server = new Net.Server();
@@ -86,14 +30,13 @@ server.on('connection', async socket => {
 
   // We'll always receive the spawn message first.
   {
-    const msg = await protocolRead(socket);
-    const data = JSON.parse(msg);
+    const data = await protocolRead(socket);
     console.assert(data.type === 'abq_native_runner_spawned');
   }
 
   async function sendAndRecvInit() {
     await protocolWrite(socket, {init_meta: {}});
-    const _initSuccess = JSON.parse(await protocolRead(socket));
+    const _initSuccess = await protocolRead(socket);
   }
 
   function sendNextTest() {
@@ -117,13 +60,22 @@ server.on('connection', async socket => {
     await protocolWrite(socket, sendNextTest());
   }
 
-  protocolReader(socket, message => {
-    const data = JSON.parse(message);
+  let currentResultSet = [];
 
+  protocolReader(socket, data => {
     if (data.manifest) {
       process.send(data);
-    } else if (data.test_result || data.test_results) {
-      process.send(data);
+    } else if (data.type === 'incremental_result') {
+      currentResultSet.push(data.one_test_result);
+    } else if (data.type === 'incremental_result_done') {
+      if (data.last_test_result) {
+        currentResultSet.push(data.last_test_result);
+      }
+
+      process.send(currentResultSet);
+      currentResultSet = [];
+
+      console.log('SERVER:', 'flushing results');
       const nextTest = sendNextTest();
 
       if (nextTest) {
