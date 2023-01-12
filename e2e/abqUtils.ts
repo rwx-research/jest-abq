@@ -85,6 +85,7 @@ export function filterTestResultForSnapshot(testResults: Array<TestResult>) {
 }
 
 export function filterTestResultsForSnapshotHelp(testResult: TestResult) {
+  console.assert(testResult.runtime > 0);
   const result = {
     ...testResult,
     display_name: replacePath(testResult.display_name),

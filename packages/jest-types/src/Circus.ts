@@ -257,7 +257,12 @@ export type TestEntry = {
   name: TestName;
   parent: DescribeBlock;
   startedAt?: number | null;
+  /** NOTE: uses process.hrtime. Not suitable for measuring epoch time, or in
+   * non-node environments!
+   */
+  startedAtNanos: number | null;
   duration?: number | null;
+  durationNanos: number | null;
   seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;

@@ -22,11 +22,13 @@ import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
+  getNanosDuration,
   getTestDuration,
   invariant,
   makeDescribe,
   makeSingleTestResult,
   makeTest,
+  nanosNow,
 } from './utils';
 
 const eventHandler: Circus.EventHandler = async (event, state) => {
@@ -192,21 +194,26 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
       break;
     }
     case 'test_skip': {
+      event.test.durationNanos = getNanosDuration(event.test);
       event.test.status = 'skip';
       if (state.abqSocket) {
+        event.test.duration = getTestDuration(event.test);
         await sendAbqTest(state, event.test);
       }
       break;
     }
     case 'test_todo': {
+      event.test.durationNanos = getNanosDuration(event.test);
       event.test.status = 'todo';
       if (state.abqSocket) {
+        event.test.duration = getTestDuration(event.test);
         await sendAbqTest(state, event.test);
       }
       break;
     }
     case 'test_done': {
       event.test.duration = getTestDuration(event.test);
+      event.test.durationNanos = getNanosDuration(event.test);
       event.test.status = 'done';
       if (state.abqSocket) {
         await sendAbqTest(state, event.test);
@@ -217,6 +224,7 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
     case 'test_start': {
       state.currentlyRunningTest = event.test;
       event.test.startedAt = Date.now();
+      event.test.startedAtNanos = nanosNow();
       event.test.invocations += 1;
       break;
     }
@@ -372,10 +380,6 @@ function formatAbqStatus(
   }
 }
 
-function millisecondToNanosecond(ms: number): number {
-  return ms * 1000000;
-}
-
 function formatAbqLocation(
   fileName: string,
   callsite: TestResult.AssertionResult['location'],
@@ -398,7 +402,6 @@ function formatAbqTestResult(
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const {
     ancestorTitles,
-    duration,
     failureDetails: _failureDetails,
     failureMessages,
     fullName,
@@ -410,10 +413,7 @@ function formatAbqTestResult(
   } = testResult;
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  // It appears that jest runners will sometimes report the duration observed
-  // for a failure after the first in a file as zero-timed; in these cases,
-  // use the estimated runtime.
-  const runtime = duration ? millisecondToNanosecond(duration) : 99999999;
+  const runtime = testEntry.durationNanos ?? 0;
 
   const location = formatAbqLocation(state.testPath!, optCallsite);
   const status = formatAbqStatus(state, jestStatus, failureMessages);
