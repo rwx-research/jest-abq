@@ -194,19 +194,19 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
       break;
     }
     case 'test_skip': {
-      event.test.duration = getTestDuration(event.test);
       event.test.durationNanos = getNanosDuration(event.test);
       event.test.status = 'skip';
       if (state.abqSocket) {
+        event.test.duration = getTestDuration(event.test);
         await sendAbqTest(state, event.test);
       }
       break;
     }
     case 'test_todo': {
-      event.test.duration = getTestDuration(event.test);
       event.test.durationNanos = getNanosDuration(event.test);
       event.test.status = 'todo';
       if (state.abqSocket) {
+        event.test.duration = getTestDuration(event.test);
         await sendAbqTest(state, event.test);
       }
       break;
