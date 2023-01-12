@@ -65,6 +65,11 @@ jobs:
         run: yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      - name: Publish @rwx-research/jest-circus
+        working-directory: packages/jest-circus
+        run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:
