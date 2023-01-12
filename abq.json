@@ -15,6 +15,11 @@
       "path": "jest-runner",
       "upstreamName": "jest-runner",
       "rwxName": "@rwx-research/jest-runner"
+    },
+    {
+      "path": "jest-circus",
+      "upstreamName": "jest-circus",
+      "rwxName": "@rwx-research/jest-circus"
     }
   ]
 }
