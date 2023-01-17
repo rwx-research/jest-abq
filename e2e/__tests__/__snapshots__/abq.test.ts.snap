@@ -70,7 +70,7 @@ Array [
           "<<NODE INTERNAL>>",
           "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:287:16)",
           "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:347:7)",
-          "    at <<REPLACED>>/packages/jest-runner/build/index.js:216:11",
+          "    at <<REPLACED>>/packages/jest-runner/build/index.js:214:11",
         ],
         "exception": "can't catch me",
         "type": "error",
