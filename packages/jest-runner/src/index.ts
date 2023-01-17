@@ -129,10 +129,8 @@ export default class TestRunner extends EmittingTestRunner {
     function resolveTestPath(testPath: string): string {
       return path.resolve(process.cwd(), testPath);
     }
-    console.error('creating abq run');
 
     return new Promise((resolve, reject) => {
-      console.error('starting');
       Abq.connect(abqConfig, abqSpawnedMessage)
         .then(socket => {
           socket.on('close', () => resolve(undefined));
