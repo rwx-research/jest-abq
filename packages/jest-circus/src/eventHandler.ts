@@ -377,6 +377,9 @@ function formatAbqStatus(
     case 'disabled': {
       return {type: 'skipped'};
     }
+    default: {
+      throw new Error(`Unexpected test status: ${status}`);
+    }
   }
 }
 
