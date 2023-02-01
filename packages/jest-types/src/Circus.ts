@@ -191,6 +191,7 @@ export type TestResult = {
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;
+  numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
   testPath: Array<TestName | BlockName>;
 };
@@ -255,6 +256,7 @@ export type TestEntry = {
   mode: TestMode;
   concurrent: boolean;
   name: TestName;
+  numPassingAsserts: number;
   parent: DescribeBlock;
   startedAt?: number | null;
   /** NOTE: uses process.hrtime. Not suitable for measuring epoch time, or in

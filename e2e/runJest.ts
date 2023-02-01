@@ -20,6 +20,7 @@ import {normalizeIcons} from './Utils';
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
+  keepTrailingNewline?: boolean; // keep final newline in output from stdout and stderr
   nodeOptions?: string;
   nodePath?: string;
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
@@ -100,6 +101,7 @@ function spawnJest(
     cwd: dir,
     env,
     reject: false,
+    stripFinalNewline: !options.keepTrailingNewline,
     timeout: options.timeout || 0,
   };
 
