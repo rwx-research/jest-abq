@@ -2,35 +2,24 @@
 
 ## Bump version
 
-```
-node scripts/abqSetVersion 29.3.100-alpha.0
+Update the root `version` in `abq.json`:
+
+```json
+{
+  "version": "29.4.100",
+  "packages": [ ... ]
+}
 ```
 
-Commit the version change.
+Commit the version change in a branch and apply via pull request.
 
 ## Publish packages
 
-Get a fresh checkout. Then, in order:
+**After** merging a PR with a version change, checkout `main` and tag:
 
-```
-yarn
-yarn build
-node scripts/abqPrepare.mjs
-yarn
-
-# For each rwx-published package, IN ORDER:
-#  packages/jest-runner
-#  packages/jest-config
-#  packages/jest-core
-pushd <package>
-
-# Dry run
-yarn pack
-# Inspect, remove contents of tarball
-rm package.tgz
-
-# Publish
-yarn npm publish
+```bash
+git tag v29.4.100
+git push --tags
 ```
 
-Make sure not to check the artifacts here in.
+The `abq-release` GitHub Actions workflow will build and publish to NPM.
