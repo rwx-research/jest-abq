@@ -5,12 +5,12 @@ Array [
   Array [
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:7#0",
+      "id": "__tests__/looped.test.js@3:5#0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 7,
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
         "line": 3,
       },
@@ -23,12 +23,12 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:7#1",
+      "id": "__tests__/looped.test.js@3:5#1",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 7,
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
         "line": 3,
       },
@@ -41,12 +41,12 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:7#2",
+      "id": "__tests__/looped.test.js@3:5#2",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 7,
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
         "line": 3,
       },
@@ -59,12 +59,12 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:7#3",
+      "id": "__tests__/looped.test.js@3:5#3",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 7,
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
         "line": 3,
       },
@@ -77,12 +77,12 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:7#4",
+      "id": "__tests__/looped.test.js@3:5#4",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 7,
+        "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
         "line": 3,
       },
