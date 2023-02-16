@@ -5,14 +5,14 @@ Array [
   Array [
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:5#0",
+      "id": "__tests__/looped.test.js@11:5#0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
         "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 3,
+        "line": 11,
       },
       "meta": Object {},
       "output": null,
@@ -23,14 +23,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:5#1",
+      "id": "__tests__/looped.test.js@11:5#1",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
         "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 3,
+        "line": 11,
       },
       "meta": Object {},
       "output": null,
@@ -41,14 +41,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:5#2",
+      "id": "__tests__/looped.test.js@11:5#2",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
         "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 3,
+        "line": 11,
       },
       "meta": Object {},
       "output": null,
@@ -59,14 +59,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:5#3",
+      "id": "__tests__/looped.test.js@11:5#3",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
         "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 3,
+        "line": 11,
       },
       "meta": Object {},
       "output": null,
@@ -77,14 +77,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@3:5#4",
+      "id": "__tests__/looped.test.js@11:5#4",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
         "column": 5,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 3,
+        "line": 11,
       },
       "meta": Object {},
       "output": null,
