@@ -77,6 +77,7 @@ export const makeTest = (
   errors: [],
   failing,
   fn,
+  indexInParent,
   invocations: 0,
   mode,
   name: convertDescriptorToString(name),
