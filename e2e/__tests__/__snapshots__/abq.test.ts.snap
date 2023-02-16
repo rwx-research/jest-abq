@@ -1,11 +1,108 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ABQ handles ID generation for tests in loops 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js@11:5#0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 5,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js@11:5#1",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 5,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js@11:5#2",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 5,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js@11:5#3",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 5,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js@11:5#4",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 5,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 11,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+  ],
+]
+`;
+
 exports[`ABQ mode handles errors in a test 1`] = `
 Array [
   Array [
     Object {
       "display_name": "this test is erroring",
-      "id": "this test is erroring",
+      "id": "__tests__/errors.test.js@9:1#0",
       "lineage": Array [],
       "location": Object {
         "column": 1,
@@ -85,7 +182,7 @@ Array [
   Array [
     Object {
       "display_name": "one skipped test",
-      "id": "one skipped test",
+      "id": "__tests__/skip.test.js@9:6#0",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -101,7 +198,7 @@ Array [
     },
     Object {
       "display_name": "other skipped test",
-      "id": "other skipped test",
+      "id": "__tests__/skip.test.js@11:6#1",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -124,7 +221,7 @@ Array [
   Array [
     Object {
       "display_name": "one todo test",
-      "id": "one todo test",
+      "id": "__tests__/todo.test.js@9:6#0",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -140,7 +237,7 @@ Array [
     },
     Object {
       "display_name": "other todo test",
-      "id": "other todo test",
+      "id": "__tests__/todo.test.js@11:6#1",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -197,6 +294,14 @@ Array [
           "type": "test",
         },
         Object {
+          "id": "__tests__/looped.test.js",
+          "meta": Object {
+            "fileName": "__tests__/looped.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
           "id": "__tests__/skip.test.js",
           "meta": Object {
             "fileName": "__tests__/skip.test.js",
@@ -231,7 +336,7 @@ Array [
   Array [
     Object {
       "display_name": "this test is failing",
-      "id": "this test is failing",
+      "id": "__tests__/failing.test.js@9:1#0",
       "lineage": Array [],
       "location": Object {
         "column": 1,
@@ -270,7 +375,7 @@ Received: true",
     },
     Object {
       "display_name": "this test is also failing",
-      "id": "this test is also failing",
+      "id": "__tests__/failing.test.js@13:1#1",
       "lineage": Array [],
       "location": Object {
         "column": 1,
@@ -310,7 +415,7 @@ Received: true",
   Array [
     Object {
       "display_name": "the + operator 1 + 2 equals 3",
-      "id": "the + operator 1 + 2 equals 3",
+      "id": "__tests__/sum.test.js@10:3#0",
       "lineage": Array [
         "the + operator",
       ],
@@ -328,7 +433,7 @@ Received: true",
     },
     Object {
       "display_name": "the + operator 2 + 3 equals 5",
-      "id": "the + operator 2 + 3 equals 5",
+      "id": "__tests__/sum.test.js@14:3#1",
       "lineage": Array [
         "the + operator",
       ],
@@ -346,7 +451,7 @@ Received: true",
     },
     Object {
       "display_name": "the + operator with three operands 2 + 3 + 4 equals 9",
-      "id": "the + operator with three operands 2 + 3 + 4 equals 9",
+      "id": "__tests__/sum.test.js@19:5#0",
       "lineage": Array [
         "the + operator",
         "with three operands",
@@ -372,7 +477,7 @@ Array [
   Array [
     Object {
       "display_name": "the + operator 1 + 2 equals 3",
-      "id": "the + operator 1 + 2 equals 3",
+      "id": "__tests__/sum.test.js@10:3#0",
       "lineage": Array [
         "the + operator",
       ],
@@ -390,7 +495,7 @@ Array [
     },
     Object {
       "display_name": "the + operator 2 + 3 equals 5",
-      "id": "the + operator 2 + 3 equals 5",
+      "id": "__tests__/sum.test.js@14:3#1",
       "lineage": Array [
         "the + operator",
       ],
@@ -408,7 +513,7 @@ Array [
     },
     Object {
       "display_name": "the + operator with three operands 2 + 3 + 4 equals 9",
-      "id": "the + operator with three operands 2 + 3 + 4 equals 9",
+      "id": "__tests__/sum.test.js@19:5#0",
       "lineage": Array [
         "the + operator",
         "with three operands",

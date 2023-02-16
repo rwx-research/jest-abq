@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import type {Status} from '@jest/test-result';
 import type {Circus, TestResult} from '@jest/types';
@@ -165,6 +166,7 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
         concurrent,
         name,
         currentDescribeBlock,
+        currentDescribeBlock.children.length,
         timeout,
         asyncError,
         failing,
@@ -385,13 +387,24 @@ function formatAbqStatus(
 
 function formatAbqLocation(
   fileName: string,
-  callsite: TestResult.AssertionResult['location'],
-): Abq.Location {
+  callsite: NonNullable<TestResult.AssertionResult['location']>,
+): Required<Abq.Location> {
   return {
-    column: callsite?.column,
+    column: callsite.column,
     file: fileName,
-    line: callsite?.line,
+    line: callsite.line,
   };
+}
+
+// Transform the location of a test into a unique ID for the test, for ABQ
+// usage.
+function idOfLocation(
+  rootDir: string,
+  {file, line, column}: Required<Abq.Location>,
+  indexInParent: number,
+): string {
+  const relFilePat = path.relative(rootDir, file);
+  return `${relFilePat}@${line}:${column}#${indexInParent}`;
 }
 
 function formatAbqTestResult(
@@ -408,7 +421,7 @@ function formatAbqTestResult(
     failureDetails: _failureDetails,
     failureMessages,
     fullName,
-    location: optCallsite,
+    location: callsite,
     numPassingAsserts: _numPassingAsserts,
     retryReasons: _retryReasons,
     status: jestStatus,
@@ -418,7 +431,9 @@ function formatAbqTestResult(
 
   const runtime = testEntry.durationNanos ?? 0;
 
-  const location = formatAbqLocation(state.testPath!, optCallsite);
+  // We force both the test path and call site to be populated when setting up
+  // the state.
+  const location = formatAbqLocation(state.testPath!, callsite!);
   const status = formatAbqStatus(state, jestStatus, failureMessages);
 
   const output = formatResultsErrors(
@@ -431,7 +446,7 @@ function formatAbqTestResult(
 
   return {
     display_name: fullName,
-    id: fullName,
+    id: idOfLocation(state.config!.rootDir, location, testEntry.indexInParent),
     lineage: ancestorTitles,
     location,
     meta: {},
