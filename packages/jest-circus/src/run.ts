@@ -119,7 +119,7 @@ function collectConcurrentTests(
     return [];
   }
   const {hasFocusedTests, testNamePattern} = getState();
-  return describeBlock.children.flatMap(child => {
+  return describeBlock.children.flatMap((child, index) => {
     switch (child.type) {
       case 'describeBlock':
         return collectConcurrentTests(child);
@@ -129,6 +129,7 @@ function collectConcurrentTests(
           child.mode === 'skip' ||
           (hasFocusedTests && child.mode !== 'only') ||
           (testNamePattern && !testNamePattern.test(getTestID(child)));
+        child.indexInParent = index;
         return skip
           ? []
           : [child as Circus.TestEntry & {fn: Circus.ConcurrentTestFn}];

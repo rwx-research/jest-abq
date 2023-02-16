@@ -64,6 +64,7 @@ export const makeTest = (
   concurrent: boolean,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
+  indexInParent: number,
   timeout: number | undefined,
   asyncError: Circus.Exception,
   failing: boolean,

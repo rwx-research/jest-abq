@@ -252,6 +252,11 @@ export type TestEntry = {
   errors: Array<TestError>;
   retryReasons: Array<TestError>;
   fn: TestFn;
+  /**
+   * The index of this test in its encompassing parent block.
+   * Used to disambiguate tests at the same location.
+   */
+  indexInParent: number;
   invocations: number;
   mode: TestMode;
   concurrent: boolean;

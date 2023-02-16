@@ -295,3 +295,30 @@ ctest('ABQ mode handles todo tests', async () => {
     },
   );
 });
+
+ctest('ABQ handles ID generation for tests in loops', async () => {
+  expect.assertions(1);
+
+  const [socketString, getMessages] = await spawnServer([
+    {
+      id: pathForAbqTestFile('looped.test.js'),
+      meta: {
+        fileName: pathForAbqTestFile('looped.test.js'),
+      },
+      tags: [],
+      type: 'test',
+    },
+  ]);
+
+  await runAbqJest(
+    {
+      ABQ_SOCKET: socketString,
+    },
+    async () => {
+      const serverMessages = (await getMessages()).map(
+        filterTestResultForSnapshot,
+      );
+      expect(serverMessages).toMatchSnapshot();
+    },
+  );
+});
