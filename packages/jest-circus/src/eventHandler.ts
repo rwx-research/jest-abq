@@ -18,6 +18,7 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
+import {idOfLocation} from './abqUtils';
 import {ROOT_DESCRIBE_BLOCK_NAME} from './state';
 import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
@@ -396,17 +397,6 @@ function formatAbqLocation(
   };
 }
 
-// Transform the location of a test into a unique ID for the test, for ABQ
-// usage.
-function idOfLocation(
-  rootDir: string,
-  {file, line, column}: Required<Abq.Location>,
-  indexInParent: number,
-): string {
-  const relFilePat = path.relative(rootDir, file);
-  return `${relFilePat}@${line}:${column}#${indexInParent}`;
-}
-
 function formatAbqTestResult(
   state: Circus.State,
   testEntry: Circus.TestEntry,
@@ -446,7 +436,7 @@ function formatAbqTestResult(
 
   return {
     display_name: fullName,
-    id: idOfLocation(state.config!.rootDir, location, testEntry.indexInParent),
+    id: idOfLocation(state, testEntry, callsite!),
     lineage: ancestorTitles,
     location,
     meta: {},
