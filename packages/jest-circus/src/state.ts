@@ -17,9 +17,10 @@ const eventHandlers: Array<Circus.EventHandler> = [
 ];
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
+export const ROOT_DESCRIBE_BLOCK_INDEX = 0;
 
 const createState = (): Circus.State => {
-  const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME, ROOT_DESCRIBE_BLOCK_INDEX);
   return {
     abqSocket: null,
     config: null,

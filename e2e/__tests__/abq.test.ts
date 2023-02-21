@@ -297,7 +297,7 @@ ctest('ABQ mode handles todo tests', async () => {
 });
 
 ctest('ABQ handles ID generation for tests in loops', async () => {
-  expect.assertions(1);
+  expect.assertions(4);
 
   const [socketString, getMessages] = await spawnServer([
     {
@@ -318,6 +318,18 @@ ctest('ABQ handles ID generation for tests in loops', async () => {
       const serverMessages = (await getMessages()).map(
         filterTestResultForSnapshot,
       );
+
+      expect(serverMessages.length).toBe(1);
+      const results = serverMessages[0];
+      expect(results.length).toBe(9);
+
+      let ids = new Set();
+      for (const result of results) {
+        ids.add(result.id);
+      }
+
+      expect(ids.size).toBe(9);
+
       expect(serverMessages).toMatchSnapshot();
     },
   );

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import type {Status} from '@jest/test-result';
 import type {Circus, TestResult} from '@jest/types';
@@ -56,7 +55,12 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
         break;
       }
 
-      const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
+      const describeBlock = makeDescribe(
+        blockName,
+        currentDescribeBlock.children.length,
+        currentDescribeBlock,
+        mode,
+      );
       currentDescribeBlock.children.push(describeBlock);
       state.currentDescribeBlock = describeBlock;
       break;
@@ -436,7 +440,7 @@ function formatAbqTestResult(
 
   return {
     display_name: fullName,
-    id: idOfLocation(state, testEntry, callsite!),
+    id: idOfLocation(state, testEntry),
     lineage: ancestorTitles,
     location,
     meta: {},

@@ -6,10 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-describe('looper', () => {
-  for (let i = 0; i < 5; i++) {
-    it('i == i', () => {
-      expect(i).toBe(i);
-    });
-  }
-});
+for (let i = 0; i < 3; i++) {
+  describe('looper', () => {
+    for (let i = 0; i < 3; i++) {
+      it('i == i', () => {
+        expect(i).toBe(i);
+      });
+    }
+  });
+}

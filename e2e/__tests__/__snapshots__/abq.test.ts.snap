@@ -5,14 +5,14 @@ Array [
   Array [
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@11:5#0",
+      "id": "__tests__/looped.test.js#0:0:0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 5,
+        "column": 7,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 11,
+        "line": 12,
       },
       "meta": Object {},
       "output": null,
@@ -23,14 +23,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@11:5#1",
+      "id": "__tests__/looped.test.js#1:0:0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 5,
+        "column": 7,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 11,
+        "line": 12,
       },
       "meta": Object {},
       "output": null,
@@ -41,14 +41,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@11:5#2",
+      "id": "__tests__/looped.test.js#2:0:0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 5,
+        "column": 7,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 11,
+        "line": 12,
       },
       "meta": Object {},
       "output": null,
@@ -59,14 +59,14 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@11:5#3",
+      "id": "__tests__/looped.test.js#0:1:0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 5,
+        "column": 7,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 11,
+        "line": 12,
       },
       "meta": Object {},
       "output": null,
@@ -77,14 +77,86 @@ Array [
     },
     Object {
       "display_name": "looper i == i",
-      "id": "__tests__/looped.test.js@11:5#4",
+      "id": "__tests__/looped.test.js#1:1:0",
       "lineage": Array [
         "looper",
       ],
       "location": Object {
-        "column": 5,
+        "column": 7,
         "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
-        "line": 11,
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#2:1:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#0:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#1:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#2:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
       },
       "meta": Object {},
       "output": null,
@@ -102,7 +174,7 @@ Array [
   Array [
     Object {
       "display_name": "this test is erroring",
-      "id": "__tests__/errors.test.js@9:1#0",
+      "id": "__tests__/errors.test.js#0:0",
       "lineage": Array [],
       "location": Object {
         "column": 1,
@@ -182,7 +254,7 @@ Array [
   Array [
     Object {
       "display_name": "one skipped test",
-      "id": "__tests__/skip.test.js@9:6#0",
+      "id": "__tests__/skip.test.js#0:0",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -198,7 +270,7 @@ Array [
     },
     Object {
       "display_name": "other skipped test",
-      "id": "__tests__/skip.test.js@11:6#1",
+      "id": "__tests__/skip.test.js#1:0",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -221,7 +293,7 @@ Array [
   Array [
     Object {
       "display_name": "one todo test",
-      "id": "__tests__/todo.test.js@9:6#0",
+      "id": "__tests__/todo.test.js#0:0",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -237,7 +309,7 @@ Array [
     },
     Object {
       "display_name": "other todo test",
-      "id": "__tests__/todo.test.js@11:6#1",
+      "id": "__tests__/todo.test.js#1:0",
       "lineage": Array [],
       "location": Object {
         "column": 6,
@@ -336,7 +408,7 @@ Array [
   Array [
     Object {
       "display_name": "this test is failing",
-      "id": "__tests__/failing.test.js@9:1#0",
+      "id": "__tests__/failing.test.js#0:0",
       "lineage": Array [],
       "location": Object {
         "column": 1,
@@ -375,7 +447,7 @@ Received: true",
     },
     Object {
       "display_name": "this test is also failing",
-      "id": "__tests__/failing.test.js@13:1#1",
+      "id": "__tests__/failing.test.js#1:0",
       "lineage": Array [],
       "location": Object {
         "column": 1,
@@ -415,7 +487,7 @@ Received: true",
   Array [
     Object {
       "display_name": "the + operator 1 + 2 equals 3",
-      "id": "__tests__/sum.test.js@10:3#0",
+      "id": "__tests__/sum.test.js#0:0:0",
       "lineage": Array [
         "the + operator",
       ],
@@ -433,7 +505,7 @@ Received: true",
     },
     Object {
       "display_name": "the + operator 2 + 3 equals 5",
-      "id": "__tests__/sum.test.js@14:3#1",
+      "id": "__tests__/sum.test.js#1:0:0",
       "lineage": Array [
         "the + operator",
       ],
@@ -451,7 +523,7 @@ Received: true",
     },
     Object {
       "display_name": "the + operator with three operands 2 + 3 + 4 equals 9",
-      "id": "__tests__/sum.test.js@19:5#0",
+      "id": "__tests__/sum.test.js#0:2:0:0",
       "lineage": Array [
         "the + operator",
         "with three operands",
@@ -477,7 +549,7 @@ Array [
   Array [
     Object {
       "display_name": "the + operator 1 + 2 equals 3",
-      "id": "__tests__/sum.test.js@10:3#0",
+      "id": "__tests__/sum.test.js#0:0:0",
       "lineage": Array [
         "the + operator",
       ],
@@ -495,7 +567,7 @@ Array [
     },
     Object {
       "display_name": "the + operator 2 + 3 equals 5",
-      "id": "__tests__/sum.test.js@14:3#1",
+      "id": "__tests__/sum.test.js#1:0:0",
       "lineage": Array [
         "the + operator",
       ],
@@ -513,7 +585,7 @@ Array [
     },
     Object {
       "display_name": "the + operator with three operands 2 + 3 + 4 equals 9",
-      "id": "__tests__/sum.test.js@19:5#0",
+      "id": "__tests__/sum.test.js#0:2:0:0",
       "lineage": Array [
         "the + operator",
         "with three operands",

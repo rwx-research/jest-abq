@@ -237,6 +237,11 @@ export type DescribeBlock = {
   type: 'describeBlock';
   children: Array<DescribeBlock | TestEntry>;
   hooks: Array<Hook>;
+  /**
+   * The index of this block in its encompassing parent.
+   * Used to disambiguate tests at the same location.
+   */
+  indexInParent: number;
   mode: BlockMode;
   name: BlockName;
   parent?: DescribeBlock;

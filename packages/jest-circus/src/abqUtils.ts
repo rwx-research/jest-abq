@@ -10,20 +10,34 @@ import type {Circus} from '@jest/types';
 
 export type AbqTestId = string & {__brand: 'abq_test_id'};
 
-// Transform the location of a test into a unique ID for the test, for ABQ
-// usage.
+/** Get the unique path of a test in a file but its path of indices from parent
+ * describe blocks.
+ * Returns the indices ordered from the direct parent of the test to the
+ * top-level of the file.
+ */
+function buildIndexedChain(
+  testEntry?: Circus.TestEntry | Circus.DescribeBlock,
+): number[] {
+  const path = [];
+  while (testEntry) {
+    path.push(testEntry.indexInParent);
+    testEntry = testEntry.parent;
+  }
+  return path;
+}
+
+/** Transform the location of a test into a unique ID for the test, for ABQ usage. */
 export function idOfLocation(
   state: Circus.State,
   testEntry: Circus.TestEntry,
-  callsite: {column: number; line: number},
 ): AbqTestId {
   // `config` and `testPath` is always explicitly populated in ABQ mode.
   const rootDir = state.config!.rootDir;
   const testPath = state.testPath!;
   const relFilePath = path.relative(rootDir, testPath);
 
-  const {column, line} = callsite;
-  const {indexInParent} = testEntry;
+  const indexChain = buildIndexedChain(testEntry);
+  const indexChainS = indexChain.join(':');
 
-  return `${relFilePath}@${line}:${column}#${indexInParent}` as AbqTestId;
+  return `${relFilePath}#${indexChainS}` as AbqTestId;
 }
