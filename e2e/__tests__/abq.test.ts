@@ -319,11 +319,11 @@ ctest('ABQ mode handles ID generation for tests in loops', async () => {
         filterTestResultForSnapshot,
       );
 
-      expect(serverMessages.length).toBe(1);
+      expect(serverMessages).toHaveLength(1);
       const results = serverMessages[0];
-      expect(results.length).toBe(9);
+      expect(results).toHaveLength(9);
 
-      let ids = new Set();
+      const ids = new Set();
       for (const result of results) {
         ids.add(result.id);
       }
@@ -340,11 +340,6 @@ ctest('ABQ mode runs focused tests', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('looped.test.js'),
-      meta: {
-        fileName: pathForAbqTestFile('looped.test.js'),
-      },
-      tags: [],
       focus: {
         test_ids: [
           '__tests__/looped.test.js#2:1:0',
@@ -352,6 +347,11 @@ ctest('ABQ mode runs focused tests', async () => {
           '__tests__/looped.test.js#0:0:0',
         ],
       },
+      id: pathForAbqTestFile('looped.test.js'),
+      meta: {
+        fileName: pathForAbqTestFile('looped.test.js'),
+      },
+      tags: [],
       type: 'test',
     },
   ]);
@@ -365,11 +365,11 @@ ctest('ABQ mode runs focused tests', async () => {
         filterTestResultForSnapshot,
       );
 
-      expect(serverMessages.length).toBe(1);
+      expect(serverMessages).toHaveLength(1);
       const results = serverMessages[0];
-      expect(results.length).toBe(3);
+      expect(results).toHaveLength(3);
 
-      let ids = new Set();
+      const ids = new Set();
       for (const result of results) {
         ids.add(result.id);
       }

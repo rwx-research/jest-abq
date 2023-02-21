@@ -25,8 +25,8 @@ const createState = (): Circus.State => {
     ROOT_DESCRIBE_BLOCK_INDEX,
   );
   return {
-    abqSocket: null,
     abqFocusTestIds: null,
+    abqSocket: null,
     config: null,
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
     currentlyRunningTest: null,

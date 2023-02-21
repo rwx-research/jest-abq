@@ -87,11 +87,11 @@ export const makeTest = (
   parent,
   retryReasons: [],
   seenDone: false,
+  skippedDueToAbqFocus: false,
   startedAt: null,
   startedAtNanos: null,
   status: null,
   timeout,
-  skippedDueToAbqFocus: false,
 });
 
 // Traverse the tree of describe blocks and return true if at least one describe

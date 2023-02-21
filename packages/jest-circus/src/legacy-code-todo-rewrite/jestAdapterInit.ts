@@ -37,7 +37,7 @@ interface RuntimeGlobals extends Global.TestFrameworkGlobals {
   expect: JestExpect;
 }
 
-type AbqConfig = {socket: net.Socket; focus?: {test_ids: string[]}};
+type AbqConfig = {socket: net.Socket; focus?: {test_ids: Array<string>}};
 
 export const initialize = async ({
   config,

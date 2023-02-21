@@ -178,7 +178,7 @@ export default class TestRunner extends EmittingTestRunner {
             // that.
             const estimatedStartTime = Date.now();
 
-            await this.#runInBandTest(test, testConfig, {socket, focus}).then(
+            await this.#runInBandTest(test, testConfig, {focus, socket}).then(
               result => {
                 let testResultMessage: Abq.TestResultMessage;
 

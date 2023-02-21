@@ -15,7 +15,7 @@ import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
-type AbqConfig = {socket: net.Socket; focus?: {test_ids: string[]}};
+type AbqConfig = {socket: net.Socket; focus?: {test_ids: Array<string>}};
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,

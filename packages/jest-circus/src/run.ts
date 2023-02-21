@@ -7,9 +7,9 @@
 
 import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
+import * as abqUtils from './abqUtils';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
-import * as abqUtils from './abqUtils';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,

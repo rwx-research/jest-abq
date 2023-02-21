@@ -13,11 +13,11 @@ import {
   getStackTraceLines,
   separateMessageFromStack,
 } from 'jest-message-util';
+import {idOfTest} from './abqUtils';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {idOfTest} from './abqUtils';
 import {ROOT_DESCRIBE_BLOCK_NAME} from './state';
 import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {

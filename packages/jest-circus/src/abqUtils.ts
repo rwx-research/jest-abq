@@ -17,7 +17,7 @@ export type AbqTestId = string & {__brand: 'abq_test_id'};
  */
 function buildIndexedChain(
   testEntry?: Circus.TestEntry | Circus.DescribeBlock,
-): number[] {
+): Array<number> {
   const path = [];
   while (testEntry) {
     path.push(testEntry.indexInParent);

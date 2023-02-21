@@ -92,7 +92,7 @@ export type AsyncEvent =
       testNamePattern?: string;
       runtimeGlobals: JestGlobals;
       parentProcess: Process;
-      abqConfig: {socket: net.Socket; focus?: {test_ids: string[]}} | null;
+      abqConfig: {socket: net.Socket; focus?: {test_ids: Array<string>}} | null;
       config: Config.ProjectConfig;
       globalConfig: Config.GlobalConfig;
       testPath: string;
@@ -228,7 +228,7 @@ export type State = {
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
   abqSocket: net.Socket | null;
-  abqFocusTestIds: string[] | null;
+  abqFocusTestIds: Array<string> | null;
   config: Config.ProjectConfig | null;
   globalConfig: Config.GlobalConfig | null;
   testPath: string | null;
