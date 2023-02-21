@@ -2771,7 +2771,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@lerna-lite/cli": ^1.11.3
     "@microsoft/api-extractor": ^7.33.4
-    "@rwx-research/abq": 0.1.0-alpha.11
+    "@rwx-research/abq": 0.1.0-alpha.12
     "@tsconfig/node14": ^1.0.3
     "@tsd/typescript": ^4.9.0
     "@types/babel__core": ^7.1.14
@@ -4040,15 +4040,6 @@ __metadata:
     colors: ~1.2.1
     string-argv: ~0.3.1
   checksum: fea24b2549ecb7d3409b6b485d7c58bf8af8f8d1dd19c43a6b3532c45579ffc546bc4533b5db29c91ae1716581fdee4cb725f6a81ecb300e902ef06600e59f1d
-  languageName: node
-  linkType: hard
-
-"@rwx-research/abq@npm:0.1.0-alpha.11":
-  version: 0.1.0-alpha.11
-  resolution: "@rwx-research/abq@npm:0.1.0-alpha.11"
-  dependencies:
-    jest: ^29.3.1
-  checksum: a05e33873f00b794bf4636e4bcf6704660902b846256e04dd7b5985e9fc506892d384bf3e660c716d12ae2b521860e2d0706173bc006d3f2b879626505b77b22
   languageName: node
   linkType: hard
 
