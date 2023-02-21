@@ -24,7 +24,12 @@ import {JestWorkerFarm, PromiseWithCustomMessage, Worker} from 'jest-worker';
 import {abqSpawnedMessage} from './abq';
 import runTest from './runTest';
 import type {SerializableResolver} from './testWorker';
-import {EmittingTestRunner, TestRunnerOptions, UnsubscribeFn} from './types';
+import {
+  AbqConfig,
+  EmittingTestRunner,
+  TestRunnerOptions,
+  UnsubscribeFn,
+} from './types';
 
 export type {Test, TestEvents} from '@jest/test-result';
 export type {Config} from '@jest/types';
@@ -90,7 +95,7 @@ export default class TestRunner extends EmittingTestRunner {
   async #runInBandTest(
     test: Test,
     testConfig: Config.GlobalConfig,
-    abqSocket?: Abq.Connection,
+    abqConfig?: AbqConfig,
   ): Promise<TestResult> {
     // `deepCyclicCopy` used here to avoid mem-leak
     const sendMessageToJest: TestFileEvent = (eventName, args) =>
@@ -108,7 +113,7 @@ export default class TestRunner extends EmittingTestRunner {
       test.context.resolver,
       this._context,
       sendMessageToJest,
-      abqSocket,
+      abqConfig,
     ).then(
       result => {
         this.#eventEmitter.emit('test-file-success', [test, result]);
@@ -156,6 +161,7 @@ export default class TestRunner extends EmittingTestRunner {
             const testCase = testCaseMessage.test_case;
 
             const fileName = resolveTestPath(testCase.meta.fileName);
+            const focus = testCase.focus;
 
             const test = tests.find(t => t.path === fileName);
             if (!test) {
@@ -172,7 +178,7 @@ export default class TestRunner extends EmittingTestRunner {
             // that.
             const estimatedStartTime = Date.now();
 
-            await this.#runInBandTest(test, testConfig, socket).then(
+            await this.#runInBandTest(test, testConfig, {socket, focus}).then(
               result => {
                 let testResultMessage: Abq.TestResultMessage;
 

@@ -92,7 +92,7 @@ export type AsyncEvent =
       testNamePattern?: string;
       runtimeGlobals: JestGlobals;
       parentProcess: Process;
-      abqSocket: net.Socket | null;
+      abqConfig: {socket: net.Socket; focus?: {test_ids: string[]}} | null;
       config: Config.ProjectConfig;
       globalConfig: Config.GlobalConfig;
       testPath: string;
@@ -228,6 +228,7 @@ export type State = {
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
   abqSocket: net.Socket | null;
+  abqFocusTestIds: string[] | null;
   config: Config.ProjectConfig | null;
   globalConfig: Config.GlobalConfig | null;
   testPath: string | null;
@@ -279,4 +280,5 @@ export type TestEntry = {
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
   failing: boolean;
+  skippedDueToAbqFocus: boolean;
 };

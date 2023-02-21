@@ -169,6 +169,175 @@ Array [
 ]
 `;
 
+exports[`ABQ mode handles ID generation for tests in loops 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#0:0:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#1:0:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#2:0:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#0:1:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#1:1:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#2:1:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#0:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#1:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#2:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+  ],
+]
+`;
+
 exports[`ABQ mode handles errors in a test 1`] = `
 Array [
   Array [
@@ -239,7 +408,7 @@ Array [
           "<<NODE INTERNAL>>",
           "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:287:16)",
           "    at runTest (<<REPLACED>>/packages/jest-runner/build/runTest.js:347:7)",
-          "    at <<REPLACED>>/packages/jest-runner/build/index.js:214:11",
+          "    at <<REPLACED>>/packages/jest-runner/build/index.js:215:11",
         ],
         "exception": "can't catch me",
         "type": "error",
@@ -321,6 +490,67 @@ Array [
       "runtime": 12,
       "status": Object {
         "type": "todo",
+      },
+    },
+  ],
+]
+`;
+
+exports[`ABQ mode runs focused tests 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#0:0:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#2:1:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "looper i == i",
+      "id": "__tests__/looped.test.js#1:2:0",
+      "lineage": Array [
+        "looper",
+      ],
+      "location": Object {
+        "column": 7,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/looped.test.js",
+        "line": 12,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
       },
     },
   ],

@@ -20,9 +20,13 @@ export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 export const ROOT_DESCRIBE_BLOCK_INDEX = 0;
 
 const createState = (): Circus.State => {
-  const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME, ROOT_DESCRIBE_BLOCK_INDEX);
+  const ROOT_DESCRIBE_BLOCK = makeDescribe(
+    ROOT_DESCRIBE_BLOCK_NAME,
+    ROOT_DESCRIBE_BLOCK_INDEX,
+  );
   return {
     abqSocket: null,
+    abqFocusTestIds: null,
     config: null,
     currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
     currentlyRunningTest: null,

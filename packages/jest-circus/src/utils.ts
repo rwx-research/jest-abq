@@ -91,6 +91,7 @@ export const makeTest = (
   startedAtNanos: null,
   status: null,
   timeout,
+  skippedDueToAbqFocus: false,
 });
 
 // Traverse the tree of describe blocks and return true if at least one describe

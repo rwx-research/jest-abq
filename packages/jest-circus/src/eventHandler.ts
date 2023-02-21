@@ -17,7 +17,7 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-import {idOfLocation} from './abqUtils';
+import {idOfTest} from './abqUtils';
 import {ROOT_DESCRIBE_BLOCK_NAME} from './state';
 import {LOG_ERRORS_BEFORE_RETRY, TEST_TIMEOUT_SYMBOL} from './types';
 import {
@@ -286,7 +286,21 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
       state.config = event.config;
       state.globalConfig = event.globalConfig;
       state.testPath = event.testPath;
-      state.abqSocket = event.abqSocket;
+
+      if (event.abqConfig) {
+        state.abqSocket = event.abqConfig.socket;
+
+        if (
+          event.abqConfig.focus &&
+          event.abqConfig.focus.test_ids.length > 1
+        ) {
+          state.abqFocusTestIds = event.abqConfig.focus.test_ids;
+        }
+      } else {
+        state.abqSocket = null;
+        state.abqFocusTestIds = null;
+      }
+
       if (state.abqSocket) {
         state.includeTestLocationInResult = true;
       }
@@ -323,6 +337,12 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
 };
 
 async function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
+  if (test.skippedDueToAbqFocus) {
+    // This test was skipped and is irrelevant due to a configured focus; don't
+    // send any information for it.
+    return;
+  }
+
   const result = formatAbqTestResult(state, test);
   const msg: Abq.IncrementalTestResultStep = {
     one_test_result: result,
@@ -440,7 +460,7 @@ function formatAbqTestResult(
 
   return {
     display_name: fullName,
-    id: idOfLocation(state, testEntry),
+    id: idOfTest(state, testEntry),
     lineage: ancestorTitles,
     location,
     meta: {},

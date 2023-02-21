@@ -6,7 +6,6 @@
  *
  */
 
-import type * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -28,7 +27,7 @@ import {formatExecError} from 'jest-message-util';
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import type {TestFramework, TestRunnerContext} from './types';
+import type {AbqConfig, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -82,7 +81,7 @@ async function runTestInternal(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
-  abqSocket?: Abq.Connection,
+  abqConfig?: AbqConfig,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -117,7 +116,7 @@ async function runTestInternal(
       : projectConfig.testRunner;
 
   if (
-    abqSocket &&
+    abqConfig &&
     testFrameworkModule !== require.resolve('jest-circus/runner')
   ) {
     throw new Error(`${testFrameworkModule} is not supported as a jest runner when ABQ is enabled.\n\
@@ -317,7 +316,7 @@ async function runTestInternal(
         runtime,
         path,
         sendMessageToJest,
-        abqSocket,
+        abqConfig,
       );
     } catch (err: any) {
       // Access stack before uninstalling sourcemaps
@@ -393,7 +392,7 @@ export default async function runTest(
   resolver: Resolver,
   context: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
-  abqSocket?: Abq.Connection,
+  abqConfig?: AbqConfig,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
@@ -402,7 +401,7 @@ export default async function runTest(
     resolver,
     context,
     sendMessageToJest,
-    abqSocket,
+    abqConfig,
   );
 
   if (leakDetector) {

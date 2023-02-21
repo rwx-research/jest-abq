@@ -26,8 +26,8 @@ function buildIndexedChain(
   return path;
 }
 
-/** Transform the location of a test into a unique ID for the test, for ABQ usage. */
-export function idOfLocation(
+/** Get a unique ID of a test, for ABQ usage. */
+export function idOfTest(
   state: Circus.State,
   testEntry: Circus.TestEntry,
 ): AbqTestId {

@@ -9,6 +9,7 @@ import pLimit = require('p-limit');
 import type {Circus} from '@jest/types';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
+import * as abqUtils from './abqUtils';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,
@@ -142,15 +143,27 @@ const _runTest = async (
 ): Promise<void> => {
   await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
-  const {hasFocusedTests, testNamePattern} = getState();
+
+  const state = getState();
+  const {hasFocusedTests, testNamePattern} = state;
+
+  let isSkippedForAbq = false;
+  if (state.abqFocusTestIds && state.abqFocusTestIds.length > 0) {
+    const testId = abqUtils.idOfTest(state, test);
+    if (!state.abqFocusTestIds.includes(testId)) {
+      isSkippedForAbq = true;
+    }
+  }
 
   const isSkipped =
     parentSkipped ||
     test.mode === 'skip' ||
+    isSkippedForAbq ||
     (hasFocusedTests && test.mode === undefined) ||
     (testNamePattern && !testNamePattern.test(getTestID(test)));
 
   if (isSkipped) {
+    test.skippedDueToAbqFocus = isSkippedForAbq;
     await dispatch({name: 'test_skip', test});
     return;
   }

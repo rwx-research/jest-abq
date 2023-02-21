@@ -296,7 +296,7 @@ ctest('ABQ mode handles todo tests', async () => {
   );
 });
 
-ctest('ABQ handles ID generation for tests in loops', async () => {
+ctest('ABQ mode handles ID generation for tests in loops', async () => {
   expect.assertions(4);
 
   const [socketString, getMessages] = await spawnServer([
@@ -329,6 +329,52 @@ ctest('ABQ handles ID generation for tests in loops', async () => {
       }
 
       expect(ids.size).toBe(9);
+
+      expect(serverMessages).toMatchSnapshot();
+    },
+  );
+});
+
+ctest('ABQ mode runs focused tests', async () => {
+  expect.assertions(4);
+
+  const [socketString, getMessages] = await spawnServer([
+    {
+      id: pathForAbqTestFile('looped.test.js'),
+      meta: {
+        fileName: pathForAbqTestFile('looped.test.js'),
+      },
+      tags: [],
+      focus: {
+        test_ids: [
+          '__tests__/looped.test.js#2:1:0',
+          '__tests__/looped.test.js#1:2:0',
+          '__tests__/looped.test.js#0:0:0',
+        ],
+      },
+      type: 'test',
+    },
+  ]);
+
+  await runAbqJest(
+    {
+      ABQ_SOCKET: socketString,
+    },
+    async () => {
+      const serverMessages = (await getMessages()).map(
+        filterTestResultForSnapshot,
+      );
+
+      expect(serverMessages.length).toBe(1);
+      const results = serverMessages[0];
+      expect(results.length).toBe(3);
+
+      let ids = new Set();
+      for (const result of results) {
+        ids.add(result.id);
+      }
+
+      expect(ids.size).toBe(3);
 
       expect(serverMessages).toMatchSnapshot();
     },
