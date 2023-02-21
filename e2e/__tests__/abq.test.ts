@@ -338,18 +338,24 @@ ctest('ABQ mode handles ID generation for tests in loops', async () => {
 ctest('ABQ mode runs focused tests', async () => {
   expect.assertions(4);
 
+  const looped = pathForAbqTestFile('looped.test.js');
+  const loopedRelative = path.relative(
+    path.resolve(__dirname, '../abq'),
+    looped,
+  );
+
   const [socketString, getMessages] = await spawnServer([
     {
       focus: {
         test_ids: [
-          '__tests__/looped.test.js#2:1:0',
-          '__tests__/looped.test.js#1:2:0',
-          '__tests__/looped.test.js#0:0:0',
+          `${loopedRelative}#2:1:0`,
+          `${loopedRelative}#1:2:0`,
+          `${loopedRelative}#0:0:0`,
         ],
       },
-      id: pathForAbqTestFile('looped.test.js'),
+      id: looped,
       meta: {
-        fileName: pathForAbqTestFile('looped.test.js'),
+        fileName: looped,
       },
       tags: [],
       type: 'test',
