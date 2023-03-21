@@ -92,7 +92,7 @@ export type AsyncEvent =
       testNamePattern?: string;
       runtimeGlobals: JestGlobals;
       parentProcess: Process;
-      abqSocket: net.Socket | null;
+      abqConfig: {socket: net.Socket; focus?: {test_ids: Array<string>}} | null;
       config: Config.ProjectConfig;
       globalConfig: Config.GlobalConfig;
       testPath: string;
@@ -228,6 +228,7 @@ export type State = {
   includeTestLocationInResult: boolean;
   maxConcurrency: number;
   abqSocket: net.Socket | null;
+  abqFocusTestIds: Array<string> | null;
   config: Config.ProjectConfig | null;
   globalConfig: Config.GlobalConfig | null;
   testPath: string | null;
@@ -237,6 +238,11 @@ export type DescribeBlock = {
   type: 'describeBlock';
   children: Array<DescribeBlock | TestEntry>;
   hooks: Array<Hook>;
+  /**
+   * The index of this block in its encompassing parent.
+   * Used to disambiguate tests at the same location.
+   */
+  indexInParent: number;
   mode: BlockMode;
   name: BlockName;
   parent?: DescribeBlock;
@@ -274,4 +280,5 @@ export type TestEntry = {
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
   failing: boolean;
+  skippedDueToAbqFocus: boolean;
 };

@@ -32,6 +32,8 @@ export type OnTestSuccess = (
   testResult: TestResult,
 ) => Promise<void>;
 
+export type AbqConfig = {socket: Abq.Connection; focus?: Abq.TestFocus};
+
 export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
@@ -39,7 +41,7 @@ export type TestFramework = (
   runtime: RuntimeType,
   testPath: string,
   sendMessageToJest?: TestFileEvent,
-  abqSocket?: Abq.Connection,
+  abqConfig?: AbqConfig,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {

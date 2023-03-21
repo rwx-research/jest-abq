@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import * as Abq from '@rwx-research/abq';
 import type {Status} from '@jest/test-result';
 import type {Circus, TestResult} from '@jest/types';
@@ -14,6 +13,7 @@ import {
   getStackTraceLines,
   separateMessageFromStack,
 } from 'jest-message-util';
+import {idOfTest} from './abqUtils';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -55,7 +55,12 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
         break;
       }
 
-      const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
+      const describeBlock = makeDescribe(
+        blockName,
+        currentDescribeBlock.children.length,
+        currentDescribeBlock,
+        mode,
+      );
       currentDescribeBlock.children.push(describeBlock);
       state.currentDescribeBlock = describeBlock;
       break;
@@ -281,7 +286,21 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
       state.config = event.config;
       state.globalConfig = event.globalConfig;
       state.testPath = event.testPath;
-      state.abqSocket = event.abqSocket;
+
+      if (event.abqConfig) {
+        state.abqSocket = event.abqConfig.socket;
+
+        if (
+          event.abqConfig.focus &&
+          event.abqConfig.focus.test_ids.length > 1
+        ) {
+          state.abqFocusTestIds = event.abqConfig.focus.test_ids;
+        }
+      } else {
+        state.abqSocket = null;
+        state.abqFocusTestIds = null;
+      }
+
       if (state.abqSocket) {
         state.includeTestLocationInResult = true;
       }
@@ -318,6 +337,12 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
 };
 
 async function sendAbqTest(state: Circus.State, test: Circus.TestEntry) {
+  if (test.skippedDueToAbqFocus) {
+    // This test was skipped and is irrelevant due to a configured focus; don't
+    // send any information for it.
+    return;
+  }
+
   const result = formatAbqTestResult(state, test);
   const msg: Abq.IncrementalTestResultStep = {
     one_test_result: result,
@@ -396,17 +421,6 @@ function formatAbqLocation(
   };
 }
 
-// Transform the location of a test into a unique ID for the test, for ABQ
-// usage.
-function idOfLocation(
-  rootDir: string,
-  {file, line, column}: Required<Abq.Location>,
-  indexInParent: number,
-): string {
-  const relFilePat = path.relative(rootDir, file);
-  return `${relFilePat}@${line}:${column}#${indexInParent}`;
-}
-
 function formatAbqTestResult(
   state: Circus.State,
   testEntry: Circus.TestEntry,
@@ -446,7 +460,7 @@ function formatAbqTestResult(
 
   return {
     display_name: fullName,
-    id: idOfLocation(state.config!.rootDir, location, testEntry.indexInParent),
+    id: idOfTest(state, testEntry),
     lineage: ancestorTitles,
     location,
     meta: {},

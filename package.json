@@ -14,7 +14,7 @@
     "@jest/test-utils": "workspace:^",
     "@lerna-lite/cli": "^1.11.3",
     "@microsoft/api-extractor": "^7.33.4",
-    "@rwx-research/abq": "0.1.0-alpha.11",
+    "@rwx-research/abq": "0.1.0-alpha.12",
     "@tsconfig/node14": "^1.0.3",
     "@tsd/typescript": "^4.9.0",
     "@types/babel__core": "^7.1.14",

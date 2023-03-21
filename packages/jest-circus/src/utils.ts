@@ -38,6 +38,7 @@ function isGeneratorFunction(
 
 export const makeDescribe = (
   name: Circus.BlockName,
+  indexInParent: number,
   parent?: Circus.DescribeBlock,
   mode?: Circus.BlockMode,
 ): Circus.DescribeBlock => {
@@ -51,6 +52,7 @@ export const makeDescribe = (
     type: 'describeBlock', // eslint-disable-next-line sort-keys
     children: [],
     hooks: [],
+    indexInParent,
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
@@ -85,6 +87,7 @@ export const makeTest = (
   parent,
   retryReasons: [],
   seenDone: false,
+  skippedDueToAbqFocus: false,
   startedAt: null,
   startedAtNanos: null,
   status: null,

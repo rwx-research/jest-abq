@@ -37,6 +37,8 @@ interface RuntimeGlobals extends Global.TestFrameworkGlobals {
   expect: JestExpect;
 }
 
+type AbqConfig = {socket: net.Socket; focus?: {test_ids: Array<string>}};
+
 export const initialize = async ({
   config,
   environment,
@@ -46,7 +48,7 @@ export const initialize = async ({
   sendMessageToJest,
   setGlobalsForRuntime,
   testPath,
-  abqSocket,
+  abqConfig,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
@@ -56,7 +58,7 @@ export const initialize = async ({
   parentProcess: NodeJS.Process;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime: (globals: RuntimeGlobals) => void;
-  abqSocket?: net.Socket;
+  abqConfig?: AbqConfig;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotState;
@@ -95,7 +97,7 @@ export const initialize = async ({
   }
 
   await dispatch({
-    abqSocket: abqSocket ? abqSocket : null,
+    abqConfig: abqConfig ? abqConfig : null,
     config,
     globalConfig,
     name: 'setup',

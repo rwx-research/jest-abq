@@ -43,11 +43,15 @@ server.on('connection', async socket => {
     const nextTest = manifest.pop();
     if (nextTest) {
       console.log(`Sending ${nextTest.id} to the native process`);
+      const test_case = {
+        id: nextTest.id,
+        meta: nextTest.meta,
+      };
+      if (nextTest.focus) {
+        test_case.focus = nextTest.focus;
+      }
       return {
-        test_case: {
-          id: nextTest.id,
-          meta: nextTest.meta,
-        },
+        test_case,
       };
     }
     return undefined;

@@ -15,6 +15,8 @@ import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
+type AbqConfig = {socket: net.Socket; focus?: {test_ids: Array<string>}};
+
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
@@ -22,7 +24,7 @@ const jestAdapter = async (
   runtime: Runtime,
   testPath: string,
   sendMessageToJest?: TestFileEvent,
-  abqSocket?: net.Socket,
+  abqConfig?: AbqConfig,
 ): Promise<TestResult> => {
   const {initialize, runAndTransformResultsToJestFormat} =
     runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
@@ -30,7 +32,7 @@ const jestAdapter = async (
     );
 
   const {globals, snapshotState} = await initialize({
-    abqSocket,
+    abqConfig,
     config,
     environment,
     globalConfig,
