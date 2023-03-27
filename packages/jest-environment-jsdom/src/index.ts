@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -160,13 +160,6 @@ export default class JSDOMEnvironment implements JestEnvironment<number> {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       this.global.close();
-
-      // Dispose "document" to prevent "load" event from triggering.
-
-      // Note that this.global.close() will trigger the CustomElement::disconnectedCallback
-      // Do not reset the document before CustomElement disconnectedCallback function has finished running,
-      // document should be accessible within disconnectedCallback.
-      Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
     // @ts-expect-error: this.global not allowed to be `null`

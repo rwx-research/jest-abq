@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -34,6 +34,7 @@ export default function shouldInstrument(
   filename: string,
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
+  loadedFilenames?: Array<string>,
 ): boolean {
   if (!options.collectCoverage) {
     return false;
@@ -58,6 +59,14 @@ export default function shouldInstrument(
     if (globsToMatcher(config.testMatch)(replacePathSepForGlob(filename))) {
       return false;
     }
+  }
+
+  if (
+    options.collectCoverageFrom.length === 0 &&
+    loadedFilenames != null &&
+    !loadedFilenames.includes(filename)
+  ) {
+    return false;
   }
 
   if (
