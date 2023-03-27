@@ -20,6 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+          path: 'jest'
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -47,6 +49,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+          path: 'jest'
           persist-credentials: false
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
