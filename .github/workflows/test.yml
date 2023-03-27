@@ -31,6 +31,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
+          cache-dependency-path: 'jest/yarn.lock'
       - name: install
         run: yarn --immutable
       - name: build
@@ -63,6 +64,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          cache-dependency-path: 'jest/yarn.lock'
       - name: install
         run: yarn --immutable
       - name: build
