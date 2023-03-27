@@ -16,27 +16,30 @@ jobs:
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
-    env:
-      # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
-      GITHUB_WORKSPACE: /home/runner/work/jest-abq/jest
 
     steps:
       - uses: actions/checkout@v3
         with:
+          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+          path: jest
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
+        working-directory: jest
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - name: install
+        working-directory: jest
         run: yarn --immutable
       - name: build
+        working-directory: jest
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
+        working-directory: jest
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
   test-jasmine:
@@ -46,25 +49,28 @@ jobs:
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
-    env:
-      # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
-      GITHUB_WORKSPACE: /home/runner/work/jest-abq/jest
 
     steps:
       - uses: actions/checkout@v3
         with:
+          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+          path: jest
           persist-credentials: false
       - name: Use Node.js LTS
+        working-directory: jest
         uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: install
+        working-directory: jest
         run: yarn --immutable
       - name: build
+        working-directory: jest
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
+        working-directory: jest
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
