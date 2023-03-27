@@ -16,12 +16,13 @@ jobs:
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
+    env:
+      # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+      GITHUB_WORKSPACE: /home/runner/work/jest-abq/jest
 
     steps:
       - uses: actions/checkout@v3
         with:
-          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
-          path: 'jest'
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -45,12 +46,13 @@ jobs:
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
+    env:
+      # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+      GITHUB_WORKSPACE: /home/runner/work/jest-abq/jest
 
     steps:
       - uses: actions/checkout@v3
         with:
-          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
-          path: 'jest'
           persist-credentials: false
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
