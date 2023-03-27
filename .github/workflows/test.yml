@@ -16,16 +16,22 @@ jobs:
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
+    defaults:
+      run:
+        working-directory: jest
 
     steps:
       - uses: actions/checkout@v3
         with:
+          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+          path: jest
           persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
+          cache-dependency-path: 'jest/yarn.lock'
       - name: install
         run: yarn --immutable
       - name: build
@@ -43,16 +49,22 @@ jobs:
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node LTS on ${{ inputs.os }} using jest-jasmine2 (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
+    defaults:
+      run:
+        working-directory: jest
 
     steps:
       - uses: actions/checkout@v3
         with:
+          # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
+          path: jest
           persist-credentials: false
       - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
+          cache-dependency-path: 'jest/yarn.lock'
       - name: install
         run: yarn --immutable
       - name: build

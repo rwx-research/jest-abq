@@ -1,5 +1,9 @@
 # Releasing
 
+## Cloning
+
+Be sure to clone the repo as `jest`. Upstream's tests do not mesh well with a non-`jest` directory name.
+
 ## Bump version
 
 Update the root `version` in `abq.json`:
