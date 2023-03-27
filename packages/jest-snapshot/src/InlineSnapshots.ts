@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -81,7 +81,7 @@ const saveSnapshotsForFile = (
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
   const presets = [require.resolve('babel-preset-current-node-syntax')];
   const plugins: Array<PluginItem> = [];
-  if (/\.tsx?$/.test(sourceFilePath)) {
+  if (/\.([cm]?ts|tsx)$/.test(sourceFilePath)) {
     plugins.push([
       require.resolve('@babel/plugin-syntax-typescript'),
       {isTSX: sourceFilePath.endsWith('x')},

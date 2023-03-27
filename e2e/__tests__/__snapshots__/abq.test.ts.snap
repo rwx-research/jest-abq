@@ -232,9 +232,9 @@ Array [
         "backtrace": Array [
           "Error: can't catch me",
           "    at Object.<anonymous> (<<REPLACED>>/e2e/abq/__tests__/error_setup.test.js:9:7)",
-          "    at Runtime._execModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1532:24)",
-          "    at Runtime._loadModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1115:12)",
-          "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:975:12)",
+          "    at Runtime._execModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1429:24)",
+          "    at Runtime._loadModule (<<REPLACED>>/packages/jest-runtime/build/index.js:1013:12)",
+          "    at Runtime.requireModule (<<REPLACED>>/packages/jest-runtime/build/index.js:873:12)",
           "<<TEST_RUNNER>>",
           "<<NODE INTERNAL>>",
           "    at runTestInternal (<<REPLACED>>/packages/jest-runner/build/runTest.js:287:16)",
