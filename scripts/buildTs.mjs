@@ -118,38 +118,43 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     cwd: packageDir,
   });
 
-  const testUtilsReferences = tsConfigPaths.filter(tsConfigPath => {
-    const tsConfig = JSON.parse(
-      stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
-    );
-    const references = tsConfig.references.map(({path}) => path);
+  // RWX-PATCH: we don't care about tsconfigs equating to the package
+  //   dependencies.
+  //   Since we overwrite the package dependencies with rwx-exposed versions
+  //   anyway, and this is only relevant in dev builds, simply ignore the
+  //   check.
+  // const testUtilsReferences = tsConfigPaths.filter(tsConfigPath => {
+  //   const tsConfig = JSON.parse(
+  //     stripJsonComments(fs.readFileSync(tsConfigPath, 'utf8')),
+  //   );
+  //   const references = tsConfig.references.map(({path}) => path);
 
-    return references.some(reference => /test-utils$/.test(reference));
-  });
+  //   return references.some(reference => /test-utils$/.test(reference));
+  // });
 
-  if (hasJestTestUtils && testUtilsReferences.length === 0) {
-    throw new Error(
-      chalk.red(
-        `Package '${
-          pkg.name
-        }' declares '@jest/test-utils' as dev dependency, but it is not referenced in:\n\n${tsConfigPaths.join(
-          '\n',
-        )}`,
-      ),
-    );
-  }
+  // if (hasJestTestUtils && testUtilsReferences.length === 0) {
+  //   throw new Error(
+  //     chalk.red(
+  //       `Package '${
+  //         pkg.name
+  //       }' declares '@jest/test-utils' as dev dependency, but it is not referenced in:\n\n${tsConfigPaths.join(
+  //         '\n',
+  //       )}`,
+  //     ),
+  //   );
+  // }
 
-  if (!hasJestTestUtils && testUtilsReferences.length > 0) {
-    throw new Error(
-      chalk.red(
-        `Package '${
-          pkg.name
-        }' does not declare '@jest/test-utils' as dev dependency, but it is referenced in:\n\n${testUtilsReferences.join(
-          '\n',
-        )}`,
-      ),
-    );
-  }
+  // if (!hasJestTestUtils && testUtilsReferences.length > 0) {
+  //   throw new Error(
+  //     chalk.red(
+  //       `Package '${
+  //         pkg.name
+  //       }' does not declare '@jest/test-utils' as dev dependency, but it is referenced in:\n\n${testUtilsReferences.join(
+  //         '\n',
+  //       )}`,
+  //     ),
+  //   );
+  // }
 });
 
 const args = [
