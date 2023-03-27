@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import * as Abq from '@rwx-research/abq';
 import {performance} from 'perf_hooks';
+import * as Abq from '@rwx-research/abq';
 import chalk = require('chalk');
 import exit = require('exit');
 import * as fs from 'graceful-fs';

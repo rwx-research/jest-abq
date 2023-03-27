@@ -113,10 +113,10 @@ packagesWithTs.forEach(({packageDir, pkg}) => {
     '@jest/test-utils',
   );
 
-  const tsConfigPaths = glob.sync('**/__tests__/tsconfig.json', {
-    absolute: true,
-    cwd: packageDir,
-  });
+  //const tsConfigPaths = glob.sync('**/__tests__/tsconfig.json', {
+  //  absolute: true,
+  //  cwd: packageDir,
+  //});
 
   // RWX-PATCH: we don't care about tsconfigs equating to the package
   //   dependencies.
