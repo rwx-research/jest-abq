@@ -2669,7 +2669,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.12
+    "@rwx-research/abq": ^1.0.0
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -2789,7 +2789,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@lerna-lite/cli": ^1.11.3
     "@microsoft/api-extractor": ^7.33.4
-    "@rwx-research/abq": 0.1.0-alpha.12
+    "@rwx-research/abq": ^1.0.0
     "@tsconfig/node14": ^1.0.3
     "@tsd/typescript": ^4.9.0
     "@types/babel__core": ^7.1.14
@@ -4063,12 +4063,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rwx-research/abq@npm:0.1.0-alpha.12":
-  version: 0.1.0-alpha.12
-  resolution: "@rwx-research/abq@npm:0.1.0-alpha.12"
-  dependencies:
-    jest: ^29.3.1
-  checksum: 74a153e215494087e9f7833e7aa07f6f1c2d88adaf381260c268a5542ae047b7eed8d23eb53ccfa0a9894e2e741845987e11148a7f5a06bec8040383c9f703c0
+"@rwx-research/abq@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@rwx-research/abq@npm:1.0.0"
+  checksum: 97229648a1b88b3efed550920f626b4b5ff8ed24e81d6df2ecbfc56ae8cbbd7214dddb38f9a093a9ddf850927e0ffbbc8d8c9e0d10bfb82b6e09c0bfc2c1e143
   languageName: node
   linkType: hard
 
@@ -12646,7 +12644,7 @@ __metadata:
     "@jest/expect": "workspace:^"
     "@jest/test-result": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.12
+    "@rwx-research/abq": ^1.0.0
     "@types/co": ^4.6.2
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
@@ -12710,7 +12708,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@jest/test-sequencer": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.12
+    "@rwx-research/abq": ^1.0.0
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -13064,7 +13062,7 @@ __metadata:
     "@jest/test-utils": "workspace:^"
     "@jest/transform": "workspace:^"
     "@jest/types": "workspace:^"
-    "@rwx-research/abq": 0.1.0-alpha.12
+    "@rwx-research/abq": ^1.0.0
     "@tsd/typescript": ^4.9.0
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3

@@ -22,7 +22,7 @@
     "@jest/expect": "workspace:^",
     "@jest/test-result": "workspace:^",
     "@jest/types": "workspace:^",
-    "@rwx-research/abq": "0.1.0-alpha.12",
+    "@rwx-research/abq": "^1.0.0",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
