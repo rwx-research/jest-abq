@@ -641,9 +641,9 @@ Array [
       "id": "packages/pkg2/__tests__/test.test.js#0:0",
       "lineage": Array [],
       "location": Object {
-        "column": 16,
+        "column": 1,
         "file": "<<REPLACED>>/e2e/abq-monorepo/packages/pkg2/__tests__/test.test.js",
-        "line": 1,
+        "line": 9,
       },
       "meta": Object {},
       "output": null,
@@ -659,9 +659,9 @@ Array [
       "id": "packages/pkg1/__tests__/test.test.js#0:0",
       "lineage": Array [],
       "location": Object {
-        "column": 16,
+        "column": 1,
         "file": "<<REPLACED>>/e2e/abq-monorepo/packages/pkg1/__tests__/test.test.js",
-        "line": 1,
+        "line": 9,
       },
       "meta": Object {},
       "output": null,
