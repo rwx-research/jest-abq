@@ -9,9 +9,10 @@
 import {ChildProcess, spawn} from 'child_process';
 import * as path from 'path';
 import {
+  AbqProject,
   filterManifestForSnapshot,
   filterTestResultForSnapshot,
-  pathForAbqTestFile,
+  pathForAbqFlatTestFile,
   runAbqJest,
 } from '../abqUtils';
 
@@ -76,6 +77,7 @@ ctest('ABQ_GENERATE_MANIFEST sends the manifest to the socket', async () => {
   const [socketString, getMessages] = await spawnServer();
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_GENERATE_MANIFEST: '1',
       ABQ_SOCKET: socketString,
@@ -89,22 +91,70 @@ ctest('ABQ_GENERATE_MANIFEST sends the manifest to the socket', async () => {
   );
 });
 
+ctest(
+  'Generates test IDs for tests in a monorepo relative to the monorepo root',
+  async () => {
+    expect.assertions(2);
+
+    let rawManifest: any;
+
+    {
+      const [socketString, getMessages] = await spawnServer();
+
+      await runAbqJest(
+        AbqProject.Monorepo,
+        {
+          ABQ_GENERATE_MANIFEST: '1',
+          ABQ_SOCKET: socketString,
+        },
+        async () => {
+          const rawMessages = await getMessages();
+          const prettyMessages = rawMessages.map(filterManifestForSnapshot);
+          rawManifest = prettyMessages[0];
+          expect(prettyMessages).toMatchSnapshot();
+        },
+      );
+
+      serverToCleanup.kill();
+    }
+
+    {
+      const [socketString, getMessages] = await spawnServer(
+        rawManifest!['manifest']['members'],
+      );
+
+      await runAbqJest(
+        AbqProject.Monorepo,
+        {
+          ABQ_SOCKET: socketString,
+        },
+        async () => {
+          const serverMessages = (await getMessages()).map(
+            filterTestResultForSnapshot,
+          );
+          expect(serverMessages).toMatchSnapshot();
+        },
+      );
+    }
+  },
+);
+
 ctest('ABQ_SOCKET runs Jest in ABQ mode', async () => {
   expect.assertions(1);
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('sum.test.js'),
+      id: pathForAbqFlatTestFile('sum.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('sum.test.js'),
+        fileName: pathForAbqFlatTestFile('sum.test.js'),
       },
       tags: [],
       type: 'test',
     },
     {
-      id: pathForAbqTestFile('failing.test.js'),
+      id: pathForAbqFlatTestFile('failing.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('failing.test.js'),
+        fileName: pathForAbqFlatTestFile('failing.test.js'),
       },
       tags: [],
       type: 'test',
@@ -112,6 +162,7 @@ ctest('ABQ_SOCKET runs Jest in ABQ mode', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -129,9 +180,9 @@ ctest('Reports all tests in a file', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('sum.test.js'),
+      id: pathForAbqFlatTestFile('sum.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('sum.test.js'),
+        fileName: pathForAbqFlatTestFile('sum.test.js'),
       },
       tags: [],
       type: 'test',
@@ -139,6 +190,7 @@ ctest('Reports all tests in a file', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -158,17 +210,17 @@ ctest(
 
     const [socketString, getMessages] = await spawnServer([
       {
-        id: pathForAbqTestFile('sum.test.js'),
+        id: pathForAbqFlatTestFile('sum.test.js'),
         meta: {
-          fileName: pathForAbqTestFile('sum.test.js'),
+          fileName: pathForAbqFlatTestFile('sum.test.js'),
         },
         tags: [],
         type: 'test',
       },
       {
-        id: pathForAbqTestFile('failing.test.js'),
+        id: pathForAbqFlatTestFile('failing.test.js'),
         meta: {
-          fileName: pathForAbqTestFile('failing.test.js'),
+          fileName: pathForAbqFlatTestFile('failing.test.js'),
         },
         tags: [],
         type: 'test',
@@ -176,6 +228,7 @@ ctest(
     ]);
 
     const {stderr, stdout} = await runAbqJest(
+      AbqProject.Flat,
       {
         ABQ_HIDE_NATIVE_OUTPUT: '1',
         ABQ_SOCKET: socketString,
@@ -193,9 +246,9 @@ ctest('ABQ mode handles errors in a test', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('errors.test.js'),
+      id: pathForAbqFlatTestFile('errors.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('errors.test.js'),
+        fileName: pathForAbqFlatTestFile('errors.test.js'),
       },
       tags: [],
       type: 'test',
@@ -203,6 +256,7 @@ ctest('ABQ mode handles errors in a test', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -220,9 +274,9 @@ ctest('ABQ mode handles errors outside of test execution', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('error_setup.test.js'),
+      id: pathForAbqFlatTestFile('error_setup.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('error_setup.test.js'),
+        fileName: pathForAbqFlatTestFile('error_setup.test.js'),
       },
       tags: [],
       type: 'test',
@@ -230,6 +284,7 @@ ctest('ABQ mode handles errors outside of test execution', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -247,9 +302,9 @@ ctest('ABQ mode handles skipped tests', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('skip.test.js'),
+      id: pathForAbqFlatTestFile('skip.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('skip.test.js'),
+        fileName: pathForAbqFlatTestFile('skip.test.js'),
       },
       tags: [],
       type: 'test',
@@ -257,6 +312,7 @@ ctest('ABQ mode handles skipped tests', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -274,9 +330,9 @@ ctest('ABQ mode handles todo tests', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('todo.test.js'),
+      id: pathForAbqFlatTestFile('todo.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('todo.test.js'),
+        fileName: pathForAbqFlatTestFile('todo.test.js'),
       },
       tags: [],
       type: 'test',
@@ -284,6 +340,7 @@ ctest('ABQ mode handles todo tests', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -301,9 +358,9 @@ ctest('ABQ mode handles ID generation for tests in loops', async () => {
 
   const [socketString, getMessages] = await spawnServer([
     {
-      id: pathForAbqTestFile('looped.test.js'),
+      id: pathForAbqFlatTestFile('looped.test.js'),
       meta: {
-        fileName: pathForAbqTestFile('looped.test.js'),
+        fileName: pathForAbqFlatTestFile('looped.test.js'),
       },
       tags: [],
       type: 'test',
@@ -311,6 +368,7 @@ ctest('ABQ mode handles ID generation for tests in loops', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },
@@ -338,7 +396,7 @@ ctest('ABQ mode handles ID generation for tests in loops', async () => {
 ctest('ABQ mode runs focused tests', async () => {
   expect.assertions(4);
 
-  const looped = pathForAbqTestFile('looped.test.js');
+  const looped = pathForAbqFlatTestFile('looped.test.js');
   const loopedRelative = path.relative(
     path.resolve(__dirname, '../abq'),
     looped,
@@ -363,6 +421,7 @@ ctest('ABQ mode runs focused tests', async () => {
   ]);
 
   await runAbqJest(
+    AbqProject.Flat,
     {
       ABQ_SOCKET: socketString,
     },

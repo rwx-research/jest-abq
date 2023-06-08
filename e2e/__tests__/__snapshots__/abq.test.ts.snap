@@ -605,6 +605,75 @@ Received: true",
 ]
 `;
 
+exports[`Generates test IDs for tests in a monorepo relative to the monorepo root 1`] = `
+Array [
+  Object {
+    "manifest": Object {
+      "init_meta": Object {},
+      "members": Array [
+        Object {
+          "id": "packages/pkg1/__tests__/test.test.js",
+          "meta": Object {
+            "fileName": "packages/pkg1/__tests__/test.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "packages/pkg2/__tests__/test.test.js",
+          "meta": Object {
+            "fileName": "packages/pkg2/__tests__/test.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`Generates test IDs for tests in a monorepo relative to the monorepo root 2`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "mytest",
+      "id": "packages/pkg2/__tests__/test.test.js#0:0",
+      "lineage": Array [],
+      "location": Object {
+        "column": 1,
+        "file": "<<REPLACED>>/e2e/abq-monorepo/packages/pkg2/__tests__/test.test.js",
+        "line": 9,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+  ],
+  Array [
+    Object {
+      "display_name": "mytest",
+      "id": "packages/pkg1/__tests__/test.test.js#0:0",
+      "lineage": Array [],
+      "location": Object {
+        "column": 1,
+        "file": "<<REPLACED>>/e2e/abq-monorepo/packages/pkg1/__tests__/test.test.js",
+        "line": 9,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+  ],
+]
+`;
+
 exports[`Reports all tests in a file 1`] = `
 Array [
   Array [

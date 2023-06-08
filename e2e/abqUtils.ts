@@ -14,12 +14,21 @@ import type {
 } from '@rwx-research/abq';
 import runJest from './runJest';
 
-export function pathForAbqTestFile(file: string) {
+export enum AbqProject {
+  Flat = 'abq',
+  Monorepo = 'abq-monorepo',
+}
+
+export function pathForAbqFlatTestFile(file: string) {
   return path.resolve(__dirname, './abq/__tests__/', file);
 }
 
-export async function runAbqJest(env: Record<string, string>, cb: any) {
-  const {stdout, stderr} = runJest('abq', [], {
+export async function runAbqJest(
+  project: AbqProject,
+  env: Record<string, string>,
+  cb: any,
+) {
+  const {stdout, stderr} = runJest(project, [], {
     env,
   });
 

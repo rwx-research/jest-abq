@@ -31,8 +31,8 @@ export function idOfTest(
   state: Circus.State,
   testEntry: Circus.TestEntry,
 ): AbqTestId {
-  // `config` and `testPath` is always explicitly populated in ABQ mode.
-  const rootDir = state.config!.rootDir;
+  // `globalConfig` and `testPath` is always explicitly populated in ABQ mode.
+  const rootDir = state.globalConfig!.rootDir;
   const testPath = state.testPath!;
   const relFilePath = path.relative(rootDir, testPath);
 
