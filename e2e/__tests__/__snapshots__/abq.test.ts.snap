@@ -249,6 +249,77 @@ Array [
 ]
 `;
 
+exports[`ABQ mode handles inline snapshots 1`] = `
+Array [
+  Array [
+    Object {
+      "display_name": "snapshot test success",
+      "id": "__tests__/inline-snapshot.test.js#0:0",
+      "lineage": Array [],
+      "location": Object {
+        "column": 1,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/inline-snapshot.test.js",
+        "line": 9,
+      },
+      "meta": Object {},
+      "output": null,
+      "runtime": 12,
+      "status": Object {
+        "type": "success",
+      },
+    },
+    Object {
+      "display_name": "snapshot test failure",
+      "id": "__tests__/inline-snapshot.test.js#1:0",
+      "lineage": Array [],
+      "location": Object {
+        "column": 1,
+        "file": "<<REPLACED>>/e2e/abq/__tests__/inline-snapshot.test.js",
+        "line": 13,
+      },
+      "meta": Object {},
+      "output": "  ● snapshot test failure
+
+    expect(received).toMatchInlineSnapshot(snapshot)
+
+    Snapshot name: \`snapshot test failure 1\`
+
+    - Snapshot  - 1
+    + Received  + 1
+
+    - B
+    + "A"
+
+      12 |
+      13 | test('snapshot test failure', () => {
+    > 14 |   expect('A').toMatchInlineSnapshot('B');
+         |               ^
+      15 | });
+      16 |
+
+      at Object.toMatchInlineSnapshot (__tests__/inline-snapshot.test.js:14:15)
+",
+      "runtime": 12,
+      "status": Object {
+        "backtrace": Array [
+          "at Object.toMatchInlineSnapshot (<<REPLACED>>/e2e/abq/__tests__/inline-snapshot.test.js:14:15)",
+        ],
+        "exception": "expect(received).toMatchInlineSnapshot(snapshot)
+
+Snapshot name: \`snapshot test failure 1\`
+
+- Snapshot  - 1
++ Received  + 1
+
+- B
++ "A"",
+        "type": "failure",
+      },
+    },
+  ],
+]
+`;
+
 exports[`ABQ mode handles skipped tests 1`] = `
 Array [
   Array [
@@ -422,6 +493,14 @@ Array [
           "id": "__tests__/failing.test.js",
           "meta": Object {
             "fileName": "__tests__/failing.test.js",
+          },
+          "tags": Array [],
+          "type": "test",
+        },
+        Object {
+          "id": "__tests__/inline-snapshot.test.js",
+          "meta": Object {
+            "fileName": "__tests__/inline-snapshot.test.js",
           },
           "tags": Array [],
           "type": "test",

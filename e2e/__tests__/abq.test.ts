@@ -445,3 +445,31 @@ ctest('ABQ mode runs focused tests', async () => {
     },
   );
 });
+
+ctest('ABQ mode handles inline snapshots', async () => {
+  expect.assertions(1);
+
+  const [socketString, getMessages] = await spawnServer([
+    {
+      id: pathForAbqFlatTestFile('inline-snapshot.test.js'),
+      meta: {
+        fileName: pathForAbqFlatTestFile('inline-snapshot.test.js'),
+      },
+      tags: [],
+      type: 'test',
+    },
+  ]);
+
+  await runAbqJest(
+    AbqProject.Flat,
+    {
+      ABQ_SOCKET: socketString,
+    },
+    async () => {
+      const serverMessages = (await getMessages()).map(
+        filterTestResultForSnapshot,
+      );
+      expect(serverMessages).toMatchSnapshot();
+    },
+  );
+});

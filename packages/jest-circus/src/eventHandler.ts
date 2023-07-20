@@ -14,6 +14,7 @@ import {
   separateMessageFromStack,
 } from 'jest-message-util';
 import {idOfTest} from './abqUtils';
+import {jestAdapterEventTestDoneHandler} from './eventsUtils';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -223,6 +224,9 @@ const eventHandler: Circus.EventHandler = async (event, state) => {
       event.test.durationNanos = getNanosDuration(event.test);
       event.test.status = 'done';
       if (state.abqSocket) {
+        // NB: replicate the behavior of `test_done` as jest would.
+        jestAdapterEventTestDoneHandler(event);
+
         await sendAbqTest(state, event.test);
       }
       state.currentlyRunningTest = null;
