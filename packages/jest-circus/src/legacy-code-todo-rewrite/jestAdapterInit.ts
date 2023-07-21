@@ -23,6 +23,7 @@ import {
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import globals from '..';
+import {jestAdapterEventTestDoneHandler} from '../eventsUtils';
 import run from '../run';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
@@ -32,7 +33,6 @@ import {
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
 import {getTestID} from '../utils';
-import {jestAdapterEventTestDoneHandler} from '../eventsUtils';
 
 interface RuntimeGlobals extends Global.TestFrameworkGlobals {
   expect: JestExpect;

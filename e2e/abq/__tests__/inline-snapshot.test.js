@@ -7,7 +7,7 @@
  */
 
 test('snapshot test success', () => {
-expect('A').toMatchInlineSnapshot('"A"');
+  expect('A').toMatchInlineSnapshot('"A"');
 });
 
 test('snapshot test failure', () => {
