@@ -23,6 +23,7 @@ import {
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import globals from '..';
+import {jestAdapterEventTestDoneHandler} from '../eventsUtils';
 import run from '../run';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
@@ -250,27 +251,8 @@ const eventHandler = async (event: Circus.Event) => {
       break;
     }
     case 'test_done': {
-      event.test.numPassingAsserts = jestExpect.getState().numPassingAsserts;
-      _addSuppressedErrors(event.test);
-      _addExpectedAssertionErrors(event.test);
+      jestAdapterEventTestDoneHandler(event);
       break;
     }
-  }
-};
-
-const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
-  const failures = jestExpect.extractExpectedAssertionsErrors();
-  const errors = failures.map(failure => failure.error);
-  test.errors = test.errors.concat(errors);
-};
-
-// Get suppressed errors from ``jest-matchers`` that weren't throw during
-// test execution and add them to the test result, potentially failing
-// a passing test.
-const _addSuppressedErrors = (test: Circus.TestEntry) => {
-  const {suppressedErrors} = jestExpect.getState();
-  jestExpect.setState({suppressedErrors: []});
-  if (suppressedErrors.length) {
-    test.errors = test.errors.concat(suppressedErrors);
   }
 };
