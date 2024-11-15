@@ -354,7 +354,7 @@ export default async function runJest({
     detail: {numTests: allTests.length},
   });
   const results = await scheduler.scheduleTests(allTests, testWatcher);
-  performance.mark('jest/scheduleAndRun:start');
+  performance.mark('jest/scheduleAndRun:end');
 
   performance.mark('jest/cacheResults:start');
   sequencer.cacheResults(allTests, results);
@@ -367,7 +367,7 @@ export default async function runJest({
   }
 
   performance.mark('jest/processResults:start');
-  const result = await processResults(results, {
+  await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,
@@ -376,7 +376,6 @@ export default async function runJest({
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
   performance.mark('jest/processResults:end');
-  return result;
 }
 
 function normalizeTestPath(testPath: string): string {
