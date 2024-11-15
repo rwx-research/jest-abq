@@ -443,7 +443,7 @@ function formatAbqTestResult(
     numPassingAsserts: _numPassingAsserts,
     retryReasons: _retryReasons,
     status: jestStatus,
-    title: _title,
+    title,
   } = testResult;
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -465,7 +465,7 @@ function formatAbqTestResult(
   return {
     display_name: fullName,
     id: idOfTest(state, testEntry),
-    lineage: ancestorTitles,
+    lineage: [...ancestorTitles, title],
     location,
     meta: {},
     output,

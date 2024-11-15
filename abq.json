@@ -1,5 +1,5 @@
 {
-  "version": "29.5.3",
+  "version": "29.5.4",
   "packages": [
     {
       "path": "jest-config",

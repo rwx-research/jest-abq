@@ -8,6 +8,7 @@ Array [
       "id": "__tests__/looped.test.js#0:0:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -26,6 +27,7 @@ Array [
       "id": "__tests__/looped.test.js#1:0:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -44,6 +46,7 @@ Array [
       "id": "__tests__/looped.test.js#2:0:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -62,6 +65,7 @@ Array [
       "id": "__tests__/looped.test.js#0:1:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -80,6 +84,7 @@ Array [
       "id": "__tests__/looped.test.js#1:1:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -98,6 +103,7 @@ Array [
       "id": "__tests__/looped.test.js#2:1:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -116,6 +122,7 @@ Array [
       "id": "__tests__/looped.test.js#0:2:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -134,6 +141,7 @@ Array [
       "id": "__tests__/looped.test.js#1:2:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -152,6 +160,7 @@ Array [
       "id": "__tests__/looped.test.js#2:2:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -175,7 +184,9 @@ Array [
     Object {
       "display_name": "this test is erroring",
       "id": "__tests__/errors.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "this test is erroring",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/errors.test.js",
@@ -255,7 +266,9 @@ Array [
     Object {
       "display_name": "snapshot test success",
       "id": "__tests__/inline-snapshot.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "snapshot test success",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/inline-snapshot.test.js",
@@ -271,7 +284,9 @@ Array [
     Object {
       "display_name": "snapshot test failure",
       "id": "__tests__/inline-snapshot.test.js#1:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "snapshot test failure",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/inline-snapshot.test.js",
@@ -326,7 +341,9 @@ Array [
     Object {
       "display_name": "one skipped test",
       "id": "__tests__/skip.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "one skipped test",
+      ],
       "location": Object {
         "column": 6,
         "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
@@ -342,7 +359,9 @@ Array [
     Object {
       "display_name": "other skipped test",
       "id": "__tests__/skip.test.js#1:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "other skipped test",
+      ],
       "location": Object {
         "column": 6,
         "file": "<<REPLACED>>/e2e/abq/__tests__/skip.test.js",
@@ -365,7 +384,9 @@ Array [
     Object {
       "display_name": "one todo test",
       "id": "__tests__/todo.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "one todo test",
+      ],
       "location": Object {
         "column": 6,
         "file": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
@@ -381,7 +402,9 @@ Array [
     Object {
       "display_name": "other todo test",
       "id": "__tests__/todo.test.js#1:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "other todo test",
+      ],
       "location": Object {
         "column": 6,
         "file": "<<REPLACED>>/e2e/abq/__tests__/todo.test.js",
@@ -406,6 +429,7 @@ Array [
       "id": "__tests__/looped.test.js#0:0:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -424,6 +448,7 @@ Array [
       "id": "__tests__/looped.test.js#2:1:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -442,6 +467,7 @@ Array [
       "id": "__tests__/looped.test.js#1:2:0",
       "lineage": Array [
         "looper",
+        "i == i",
       ],
       "location": Object {
         "column": 7,
@@ -549,7 +575,9 @@ Array [
     Object {
       "display_name": "this test is failing",
       "id": "__tests__/failing.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "this test is failing",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/failing.test.js",
@@ -588,7 +616,9 @@ Received: true",
     Object {
       "display_name": "this test is also failing",
       "id": "__tests__/failing.test.js#1:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "this test is also failing",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq/__tests__/failing.test.js",
@@ -630,6 +660,7 @@ Received: true",
       "id": "__tests__/sum.test.js#0:0:0",
       "lineage": Array [
         "the + operator",
+        "1 + 2 equals 3",
       ],
       "location": Object {
         "column": 3,
@@ -648,6 +679,7 @@ Received: true",
       "id": "__tests__/sum.test.js#1:0:0",
       "lineage": Array [
         "the + operator",
+        "2 + 3 equals 5",
       ],
       "location": Object {
         "column": 3,
@@ -667,6 +699,7 @@ Received: true",
       "lineage": Array [
         "the + operator",
         "with three operands",
+        "2 + 3 + 4 equals 9",
       ],
       "location": Object {
         "column": 5,
@@ -718,7 +751,9 @@ Array [
     Object {
       "display_name": "mytest",
       "id": "packages/pkg2/__tests__/test.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "mytest",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq-monorepo/packages/pkg2/__tests__/test.test.js",
@@ -736,7 +771,9 @@ Array [
     Object {
       "display_name": "mytest",
       "id": "packages/pkg1/__tests__/test.test.js#0:0",
-      "lineage": Array [],
+      "lineage": Array [
+        "mytest",
+      ],
       "location": Object {
         "column": 1,
         "file": "<<REPLACED>>/e2e/abq-monorepo/packages/pkg1/__tests__/test.test.js",
@@ -761,6 +798,7 @@ Array [
       "id": "__tests__/sum.test.js#0:0:0",
       "lineage": Array [
         "the + operator",
+        "1 + 2 equals 3",
       ],
       "location": Object {
         "column": 3,
@@ -779,6 +817,7 @@ Array [
       "id": "__tests__/sum.test.js#1:0:0",
       "lineage": Array [
         "the + operator",
+        "2 + 3 equals 5",
       ],
       "location": Object {
         "column": 3,
@@ -798,6 +837,7 @@ Array [
       "lineage": Array [
         "the + operator",
         "with three operands",
+        "2 + 3 + 4 equals 9",
       ],
       "location": Object {
         "column": 5,
