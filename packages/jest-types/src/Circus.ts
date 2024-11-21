@@ -149,6 +149,10 @@ export type AsyncEvent =
       test: TestEntry;
     }
   | {
+      name: 'test_started';
+      test: TestEntry;
+    }
+  | {
       // test failure is defined by presence of errors in `test.errors`,
       // `test_done` indicates that the test and all its hooks were run,
       // and nothing else will change it's state in the future. (except third
@@ -184,6 +188,17 @@ export type MatcherResults = {
 };
 
 export type TestStatus = 'skip' | 'done' | 'todo';
+
+export type TestNamesPath = Array<TestName | BlockName>;
+
+export type TestCaseStartInfo = {
+  ancestorTitles: Array<string>;
+  fullName: string;
+  mode: TestMode;
+  title: string;
+  startedAt?: number | null;
+};
+
 export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
@@ -193,7 +208,7 @@ export type TestResult = {
   location?: {column: number; line: number} | null;
   numPassingAsserts: number;
   retryReasons: Array<FormattedError>;
-  testPath: Array<TestName | BlockName>;
+  testPath: TestNamesPath;
 };
 
 export type RunResult = {

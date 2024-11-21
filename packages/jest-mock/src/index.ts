@@ -177,17 +177,13 @@ export interface Replaced<T = unknown> {
    * Restore property to its original value known at the time of mocking.
    */
   restore(): void;
-
   /**
    * Change the value of the property.
    */
   replaceValue(value: T): this;
 }
 
-type ReplacedPropertyRestorer<
-  T extends object,
-  K extends PropertyLikeKeys<T>,
-> = {
+type ReplacedPropertyRestorer<T extends object, K extends keyof T> = {
   (): void;
   object: T;
   property: K;
@@ -776,11 +772,6 @@ export class ModuleMocker {
       f.mockReset = () => {
         f.mockClear();
         this._mockConfigRegistry.delete(f);
-
-        if (spyState != null) {
-          spyState.reset?.();
-        }
-
         return f;
       };
 
@@ -995,11 +986,11 @@ export class ModuleMocker {
   /**
    * Check whether the given property of an object has been already replaced.
    */
-  private _findReplacedProperty<
-    T extends object,
-    K extends PropertyLikeKeys<T>,
-  >(object: T, propertyKey: K): ReplacedPropertyRestorer<T, K> | undefined {
-    for (const {restore} of this._spyState) {
+  private _findReplacedProperty<T extends object, K extends keyof T>(
+    object: T,
+    propertyKey: K,
+  ): ReplacedPropertyRestorer<T, K> | undefined {
+    for (const spyState of this._spyState) {
       if (
         'object' in restore &&
         'property' in restore &&
@@ -1160,19 +1151,16 @@ export class ModuleMocker {
     methodKey: keyof T,
     accessType?: 'get' | 'set',
   ): MockInstance {
-    if (typeof object !== 'object' && typeof object !== 'function') {
+    if (
+      object == null ||
+      (typeof object !== 'object' && typeof object !== 'function')
+    ) {
       throw new Error(
         `Cannot use spyOn on a primitive value; ${this._typeOf(object)} given`,
       );
     }
 
-    if (!object) {
-      throw new Error(
-        `spyOn could not find an object to spy on for ${String(methodKey)}`,
-      );
-    }
-
-    if (!methodKey) {
+    if (methodKey == null) {
       throw new Error('No property name supplied');
     }
 
@@ -1182,12 +1170,20 @@ export class ModuleMocker {
 
     const original = object[methodKey];
 
+    if (!original) {
+      throw new Error(
+        `Property \`${String(
+          methodKey,
+        )}\` does not exist in the provided object`,
+      );
+    }
+
     if (!this.isMockFunction(original)) {
       if (typeof original !== 'function') {
         throw new Error(
-          `Cannot spy on the ${String(
+          `Cannot spy on the \`${String(
             methodKey,
-          )} property because it is not a function; ${this._typeOf(
+          )}\` property because it is not a function; ${this._typeOf(
             original,
           )} given instead.${
             typeof original !== 'object'
@@ -1270,18 +1266,24 @@ export class ModuleMocker {
     }
 
     if (!descriptor) {
-      throw new Error(`${String(propertyKey)} property does not exist`);
+      throw new Error(
+        `Property \`${String(
+          propertyKey,
+        )}\` does not exist in the provided object`,
+      );
     }
 
     if (!descriptor.configurable) {
-      throw new Error(`${String(propertyKey)} is not declared configurable`);
+      throw new Error(
+        `Property \`${String(propertyKey)}\` is not declared configurable`,
+      );
     }
 
     if (!descriptor[accessType]) {
       throw new Error(
-        `Property ${String(
+        `Property \`${String(
           propertyKey,
-        )} does not have access type ${accessType}`,
+        )}\` does not have access type ${accessType}`,
       );
     }
 
@@ -1328,29 +1330,24 @@ export class ModuleMocker {
     return descriptor[accessType] as Mock;
   }
 
-  replaceProperty<
-    T extends object,
-    K extends PropertyLikeKeys<T>,
-    V extends T[K],
-  >(object: T, propertyKey: K, value: V): Replaced<T[K]> {
-    if (object === undefined || object == null) {
+  replaceProperty<T extends object, K extends keyof T>(
+    object: T,
+    propertyKey: K,
+    value: T[K],
+  ): Replaced<T[K]> {
+    if (
+      object == null ||
+      (typeof object !== 'object' && typeof object !== 'function')
+    ) {
       throw new Error(
-        `replaceProperty could not find an object on which to replace ${String(
-          propertyKey,
-        )}`,
-      );
-    }
-
-    if (propertyKey === undefined || propertyKey === null) {
-      throw new Error('No property name supplied');
-    }
-
-    if (typeof object !== 'object') {
-      throw new Error(
-        `Cannot mock property on a non-object value; ${this._typeOf(
+        `Cannot use replaceProperty on a primitive value; ${this._typeOf(
           object,
         )} given`,
       );
+    }
+
+    if (propertyKey == null) {
+      throw new Error('No property name supplied');
     }
 
     let descriptor = Object.getOwnPropertyDescriptor(object, propertyKey);
@@ -1360,17 +1357,23 @@ export class ModuleMocker {
       proto = Object.getPrototypeOf(proto);
     }
     if (!descriptor) {
-      throw new Error(`${String(propertyKey)} property does not exist`);
+      throw new Error(
+        `Property \`${String(
+          propertyKey,
+        )}\` does not exist in the provided object`,
+      );
     }
     if (!descriptor.configurable) {
-      throw new Error(`${String(propertyKey)} is not declared configurable`);
+      throw new Error(
+        `Property \`${String(propertyKey)}\` is not declared configurable`,
+      );
     }
 
     if (descriptor.get !== undefined) {
       throw new Error(
-        `Cannot mock the ${String(
+        `Cannot replace the \`${String(
           propertyKey,
-        )} property because it has a getter. Use \`jest.spyOn(object, '${String(
+        )}\` property because it has a getter. Use \`jest.spyOn(object, '${String(
           propertyKey,
         )}', 'get').mockReturnValue(value)\` instead.`,
       );
@@ -1378,9 +1381,9 @@ export class ModuleMocker {
 
     if (descriptor.set !== undefined) {
       throw new Error(
-        `Cannot mock the ${String(
+        `Cannot replace the \`${String(
           propertyKey,
-        )} property because it has a setter. Use \`jest.spyOn(object, '${String(
+        )}\` property because it has a setter. Use \`jest.spyOn(object, '${String(
           propertyKey,
         )}', 'set').mockReturnValue(value)\` instead.`,
       );
@@ -1388,9 +1391,9 @@ export class ModuleMocker {
 
     if (typeof descriptor.value === 'function') {
       throw new Error(
-        `Cannot mock the ${String(
+        `Cannot replace the \`${String(
           propertyKey,
-        )} property because it is a function. Use \`jest.spyOn(object, '${String(
+        )}\` property because it is a function. Use \`jest.spyOn(object, '${String(
           propertyKey,
         )}')\` instead.`,
       );
@@ -1444,7 +1447,6 @@ export class ModuleMocker {
   }
 
   resetAllMocks(): void {
-    this.clearAllMocks();
     this._mockConfigRegistry = new WeakMap();
     this._spyState.forEach(spyState => spyState.reset?.());
   }

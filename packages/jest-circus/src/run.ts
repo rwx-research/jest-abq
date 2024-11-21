@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {AsyncLocalStorage} from 'async_hooks';
 import pLimit = require('p-limit');
+import {jestExpect} from '@jest/expect';
 import type {Circus} from '@jest/types';
 import * as abqUtils from './abqUtils';
+import {invariant} from 'jest-util';
 import shuffleArray, {RandomNumberGenerator, rngBuilder} from './shuffleArray';
 import {dispatch, getState} from './state';
 import {RETRY_TIMES} from './types';
@@ -16,9 +19,12 @@ import {
   getAllHooksForDescribe,
   getEachHooksForTest,
   getTestID,
-  invariant,
   makeRunResult,
 } from './utils';
+
+type ConcurrentTestEntry = Omit<Circus.TestEntry, 'fn'> & {
+  fn: Circus.ConcurrentTestFn;
+};
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock, seed, randomize} = getState();
@@ -50,20 +56,8 @@ const _runTestsForDescribeBlock = async (
 
   if (isRootBlock) {
     const concurrentTests = collectConcurrentTests(describeBlock);
-    const mutex = pLimit(getState().maxConcurrency);
-    for (const test of concurrentTests) {
-      try {
-        const promise = mutex(test.fn);
-        // Avoid triggering the uncaught promise rejection handler in case the
-        // test errors before being awaited on.
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        promise.catch(() => {});
-        test.fn = () => promise;
-      } catch (err) {
-        test.fn = () => {
-          throw err;
-        };
-      }
+    if (concurrentTests.length > 0) {
+      startTestsConcurrently(concurrentTests);
     }
   }
 
@@ -121,7 +115,7 @@ const _runTestsForDescribeBlock = async (
 
 function collectConcurrentTests(
   describeBlock: Circus.DescribeBlock,
-): Array<Omit<Circus.TestEntry, 'fn'> & {fn: Circus.ConcurrentTestFn}> {
+): Array<ConcurrentTestEntry> {
   if (describeBlock.mode === 'skip') {
     return [];
   }
@@ -136,11 +130,32 @@ function collectConcurrentTests(
           child.mode === 'skip' ||
           (hasFocusedTests && child.mode !== 'only') ||
           (testNamePattern && !testNamePattern.test(getTestID(child)));
-        return skip
-          ? []
-          : [child as Circus.TestEntry & {fn: Circus.ConcurrentTestFn}];
+        return skip ? [] : [child as ConcurrentTestEntry];
     }
   });
+}
+
+function startTestsConcurrently(concurrentTests: Array<ConcurrentTestEntry>) {
+  const mutex = pLimit(getState().maxConcurrency);
+  const testNameStorage = new AsyncLocalStorage<string>();
+  jestExpect.setState({
+    currentConcurrentTestName: () => testNameStorage.getStore(),
+  });
+  for (const test of concurrentTests) {
+    try {
+      const testFn = test.fn;
+      const promise = mutex(() => testNameStorage.run(getTestID(test), testFn));
+      // Avoid triggering the uncaught promise rejection handler in case the
+      // test fails before being awaited on.
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      promise.catch(() => {});
+      test.fn = () => promise;
+    } catch (err) {
+      test.fn = () => {
+        throw err;
+      };
+    }
+  }
 }
 
 const _runTest = async (
@@ -178,6 +193,8 @@ const _runTest = async (
     await dispatch({name: 'test_todo', test});
     return;
   }
+
+  await dispatch({name: 'test_started', test});
 
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 

@@ -15,6 +15,7 @@ import {
 } from 'jest-message-util';
 import {idOfTest} from './abqUtils';
 import {jestAdapterEventTestDoneHandler} from './eventsUtils';
+import {invariant} from 'jest-util';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -26,7 +27,6 @@ import {
   describeBlockHasTests,
   getNanosDuration,
   getTestDuration,
-  invariant,
   makeDescribe,
   makeSingleTestResult,
   makeTest,

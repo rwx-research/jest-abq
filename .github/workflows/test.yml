@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x, 16.x, 18.x, 19.x]
+        node-version: [14.x, 16.x, 18.x, 19.x, 20.x]
         shard: ['1/4', '2/4', '3/4', '4/4']
     name: Node v${{ matrix.node-version }} on ${{ inputs.os }} (${{ matrix.shard }})
     runs-on: ${{ inputs.os }}
@@ -21,7 +21,7 @@ jobs:
         working-directory: jest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
           path: jest
@@ -38,7 +38,7 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
+        uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}
 
@@ -54,7 +54,7 @@ jobs:
         working-directory: jest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # NB(rwx): checking out as jest-abq does not mesh well with upstream's tests.
           path: jest
@@ -71,6 +71,6 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
+        uses: SimenB/github-actions-cpu-cores@v2
       - name: run tests using jest-jasmine
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }} --shard=${{ matrix.shard }}

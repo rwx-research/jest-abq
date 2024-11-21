@@ -128,7 +128,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/ban-types': [
           'error',
-          // TODO: remove these overrides: https://github.com/facebook/jest/issues/10177
+          // TODO: remove these overrides: https://github.com/jestjs/jest/issues/10177
           {types: {Function: false, object: false, '{}': false}},
         ],
         'local/ban-types-eventually': [
@@ -357,7 +357,7 @@ module.exports = {
       files: [
         'scripts/*',
         'packages/*/__benchmarks__/test.js',
-        'packages/jest-cli/src/init/index.ts',
+        'packages/create-jest/src/runCreate.ts',
         'packages/jest-repl/src/cli/runtime-cli.ts',
       ],
       rules: {
